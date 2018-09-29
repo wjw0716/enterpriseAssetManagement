@@ -37,6 +37,10 @@ public class UserController {
     public ResultDto<Object> update(@RequestBody User user) {
         return userService.update(user);
     }
+    @PutMapping("/updatePwd")
+    public ResultDto<Object> updatePwd(@RequestBody User user) {
+    	return userService.updatePwd(user.getPassword(),user.getId());
+    }
 
     @GetMapping("/list")
     public ResultDto<PageDto<User>> getList(UserDto dto){

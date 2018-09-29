@@ -62,7 +62,7 @@ const SweetAlertUtils = {
 
         let option = jQuery.extend(true,{
             title: "是否确定?",
-            text: "你当前的操作属于威胁操作!",
+            text: "请谨慎操作",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",

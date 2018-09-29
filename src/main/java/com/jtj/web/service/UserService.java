@@ -16,4 +16,6 @@ public interface UserService extends CurdService<User,UserDto,UserDao> {
 
     ResultDto<User> getUserById(long id);
 
+	ResultDto<Object> updatePwd(String pwd, Long id);
+
 }

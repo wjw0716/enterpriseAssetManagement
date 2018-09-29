@@ -8,6 +8,8 @@ const Shiro = {
     stringPermissions:{},
     perms:{},
     init:function (roles,stringPermissions) {
+    	//console.log(roles);
+    	//console.log(stringPermissions);
         jQuery.each(roles,function (index,item) {
             Shiro.roles[item] = true;
         });
@@ -30,6 +32,7 @@ const Shiro = {
         //null
         if (value === undefined || value === null) return true;
         //value is str
+
         if (!jQuery.isArray(value)){
             return Shiro[object][value] === true;
         }
@@ -41,13 +44,15 @@ const Shiro = {
                 }
             }
             return false;
-        }
-        //logical.AND
-        for (let i in value){
-            if (!Shiro[object][value[i]]){
-                return false;
+        }else{
+            //logical.AND
+            for (let i in value){
+                if (!Shiro[object][value[i]]){
+                    return false;
+                }
             }
         }
+       
         return true;
     },
     requiresRoles:function (value,logical) {

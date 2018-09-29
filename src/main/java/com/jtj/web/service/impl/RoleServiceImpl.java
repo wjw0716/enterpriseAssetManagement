@@ -4,7 +4,6 @@ import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
 import com.jtj.web.common.exception.AssetException;
 import com.jtj.web.dao.PermissionDao;
-import com.jtj.web.dao.PointDao;
 import com.jtj.web.dao.RoleDao;
 import com.jtj.web.entity.KeyValue;
 import com.jtj.web.entity.Permission;
@@ -27,8 +26,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleDao roleDao;
-    @Autowired
-    private PointDao pointDao;
     @Autowired
     private PermissionDao permissionDao;
 

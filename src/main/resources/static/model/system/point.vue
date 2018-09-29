@@ -37,7 +37,7 @@
                     <div class="row"><div class="col-lg-12"><div class="ibox">
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <tt-table v-bind:data="tableData" :selection = "true" v-model="tableSelectData">
+                                <tt-table v-bind:data="tableData" :selection = "true" :selectOne="true" v-model="tableSelectData">
                                     <template slot="tt-body-operation" scope="props">
                                         <button @click="showUpdateModal(props.row)" class="btn btn-table btn-primary btn-rounded" type="button">修改</button>
                                     </template>
@@ -89,7 +89,7 @@
         data:function () {
             return {
                 headerLabel:{
-                    name:"网点管理",
+                    name:"部门管理",
                     path:{
                         parent:[
                             {url:"/",name:"Home"},
@@ -104,7 +104,7 @@
                 },
                 tableData:{
                     title:{
-                        id:"网点id",
+                        id:"部门id",
                         name:"名称",
                         pid:"父id",
                         order:"排序",
@@ -139,14 +139,35 @@
         created:function () {
             let self = this;
             this.getTableList();
-            Server.point.getPointTree.execute(data => {
-                self.tree.point = data.object;
-            });
+            //初始化模态框相关数据
+             Server.point.getPointTree.execute(data => {
+                    let treeData = data.object;
+                    self.tree.point = data.object;
+                      App.changeListTreeForJsTree(treeData);
+                    $('#menu-tree').jstree({
+                        'core' : {
+                            'data' :treeData
+                        }
+                    }).on('changed.jstree', function (e, data) {
+                        
+                        if(typeof(data.node)=="undefined"){
+
+                        }else{
+                            self.conditions.pid = self.conditions.pid === data.node.id ? null : data.node.id;
+                            //  self.pname = data.node.text;   
+                        }
+                        self.getTableList();
+
+                        
+                    });
+                   
+                });
+          
         },
         beforeMount:function () {
         },
         mounted:function () {
-            this.updateTree();
+            //this.updateTree();
         },
         methods: {
             getTablePaginationList:function (index,size) {
@@ -177,6 +198,7 @@
                         func.body(self.fromModalData.data).execute(() => {
                             self.fromModal.hide();
                             self.getTableList();
+                            self.updateTree();
                         })
                     }
                 };
@@ -184,7 +206,10 @@
             deleteOne:function () {
                 let self = this;
                 SweetAlertUtils.show().sure(function () {
-                    Server.point.deleteById.path("id",self.tableSelectData[0].id).execute(() => self.getTableList());
+                    Server.point.deleteById.path("id",self.tableSelectData[0].id).execute(() => {
+                        self.getTableList();
+                         self.updateTree();
+                    });
                 });
             },
             showAddModal:function () {
@@ -204,16 +229,12 @@
                 let self = this;
                 Server.point.getPointTree.execute(data => {
                     let treeData = data.object;
+                    let tree= $('#menu-tree')
+                    self.tree.point = data.object;
                     App.changeListTreeForJsTree(treeData);
-                    $('#menu-tree').jstree({
-                        'core' : {
-                            'data' :treeData
-                        }
-                    }).on('changed.jstree', function (e, data) {
-                        self.conditions.pid = self.conditions.pid === data.node.id ? null : data.node.id;
-                        self.pname = data.node.text;
-                        self.getTableList();
-                    });
+                    tree.jstree(true).settings.core.data = treeData;
+                    tree.jstree(true).refresh();
+                  
                 });
             }
         }

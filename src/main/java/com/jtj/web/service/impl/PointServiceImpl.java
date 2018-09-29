@@ -115,7 +115,10 @@ public class PointServiceImpl implements PointService {
             assetDao.updateToNewPoint(id,point.getPid());
         }
         ResultDto<Object> result = new ResultDto<>();
-        int count = pointDao.delete(new Long[]{id});
+        //XXX:去除原警告信息
+        pointDao.delete(new Long[]{id});
+        refreshTreeData();
+//        int count = pointDao.delete(new Long[]{id});
         result.setResultCode(ResultCode.SUCCESS_DELETE);
         refreshTreeData();
         return result;

@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mysql-mine
-Source Server Version : 50714
+Source Server         : localhost_mysql
+Source Server Version : 50720
 Source Host           : localhost:3306
 Source Database       : asset
 
 Target Server Type    : MYSQL
-Target Server Version : 50714
+Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2017-09-10 14:36:10
+Date: 2018-09-28 16:58:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,7 +34,7 @@ CREATE TABLE `assets_borrow` (
   KEY `ab@uuid` (`uuid`) USING BTREE,
   CONSTRAINT `assets_borrow_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `assets_borrow_ibfk_2` FOREIGN KEY (`uuid`) REFERENCES `assets_item` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for assets_item
@@ -48,15 +48,16 @@ CREATE TABLE `assets_item` (
   `price` decimal(10,2) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态，1：正常，2：租借，3：维修，4：报废',
   `assets_type_id` bigint(20) NOT NULL COMMENT '资产类型id',
-  `point_id` bigint(20) NOT NULL COMMENT '网点id',
+  `point_id` bigint(20) NOT NULL COMMENT '部门id',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `buy_time` date NOT NULL DEFAULT '1970-01-01' COMMENT '购入时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique@uuid` (`uuid`) USING BTREE,
   KEY `ai@point_id` (`point_id`) USING BTREE,
   KEY `ai@assets_type_id` (`assets_type_id`) USING BTREE,
   CONSTRAINT `assets_item_ibfk_1` FOREIGN KEY (`assets_type_id`) REFERENCES `assets_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for assets_operation_record
@@ -71,7 +72,7 @@ CREATE TABLE `assets_operation_record` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for assets_stock_take
@@ -90,7 +91,7 @@ CREATE TABLE `assets_stock_take` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for assets_stock_take_item
@@ -105,12 +106,12 @@ CREATE TABLE `assets_stock_take_item` (
   `price` decimal(10,2) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态，1：待盘点，2：正常，3：异常',
   `assets_type_id` bigint(20) NOT NULL COMMENT '资产类型id',
-  `point_id` bigint(20) NOT NULL COMMENT '网点id',
+  `point_id` bigint(20) NOT NULL COMMENT '部门id',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique@stock_take_id, uuid` (`stock_take_id`,`uuid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for assets_type
@@ -124,7 +125,7 @@ CREATE TABLE `assets_type` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for auth_permission
@@ -151,7 +152,7 @@ CREATE TABLE `auth_role` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for auth_role_assets_type_relation
@@ -185,7 +186,7 @@ CREATE TABLE `auth_role_permission_relation` (
   KEY `rp@permission_id` (`permission_id`) USING BTREE,
   CONSTRAINT `auth_role_permission_relation_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`) ON DELETE CASCADE,
   CONSTRAINT `auth_role_permission_relation_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `auth_role` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=427 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for auth_user
@@ -197,29 +198,30 @@ CREATE TABLE `auth_user` (
   `password` varchar(50) NOT NULL COMMENT '密码',
   `description` varchar(255) DEFAULT NULL COMMENT '个人介绍',
   `role_id` bigint(20) NOT NULL COMMENT '角色id',
-  `point_id` bigint(20) DEFAULT NULL COMMENT '网点id',
+  `point_id` bigint(20) DEFAULT NULL COMMENT '部门id',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `status` tinyint(1) NOT NULL COMMENT '状态 1 正常/0 停用',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique@name` (`name`) USING BTREE,
   KEY `user@role_id` (`role_id`) USING BTREE,
   KEY `user@point_id` (`point_id`) USING BTREE,
   CONSTRAINT `auth_user_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `auth_role` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for point
 -- ----------------------------
 DROP TABLE IF EXISTS `point`;
 CREATE TABLE `point` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '网点id',
-  `name` varchar(50) NOT NULL COMMENT '网点名称',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门id',
+  `name` varchar(50) NOT NULL COMMENT '部门名称',
   `pid` bigint(20) NOT NULL COMMENT '父节点id',
   `order` int(8) NOT NULL COMMENT '同一个父节点下面的排序',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for system_config
@@ -250,3 +252,4 @@ CREATE TABLE `system_dictionary` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique@table, column, key` (`table`,`column`,`key`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+SET FOREIGN_KEY_CHECKS=1;

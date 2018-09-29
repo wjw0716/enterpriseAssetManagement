@@ -12,7 +12,15 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(){
-        return "about";
+        return "redirect:login";
+    }
+    @GetMapping("/login")
+    public String login(){
+    	return "login";
+    }
+    @GetMapping("/index")
+    public String indexV(){
+    	return "index";
     }
 
 }

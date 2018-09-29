@@ -4,7 +4,7 @@ import com.jtj.web.common.Constant;
 import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
 import com.jtj.web.common.exception.AuthenticationAssetException;
-import com.jtj.web.common.utils.MD5String;
+import com.jtj.web.common.utils.EncryptUtils;
 import com.jtj.web.dao.PermissionDao;
 import com.jtj.web.dao.UserDao;
 import com.jtj.web.dto.UsernamePasswordTokenDto;
@@ -89,7 +89,7 @@ public class ShiroRealm extends AuthorizingRealm {
             throw new AuthenticationAssetException(result);
         }
 
-        String MD5Password = MD5String.getMD5Str(user.getPassword() + time);
+        String MD5Password = EncryptUtils.getMD5(user.getPassword() + time);
         if (!MD5Password.equals(new String(token.getPassword()))){
             result.setResultCode(ResultCode.USER_PASSWORD_ERROR);
             throw new AuthenticationAssetException(result);

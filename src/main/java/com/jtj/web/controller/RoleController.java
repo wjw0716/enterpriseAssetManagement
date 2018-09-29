@@ -10,6 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -54,10 +55,15 @@ public class RoleController {
 
     @PutMapping("/updatePermission")
     public ResultDto<Object> updatePermission(@RequestBody Map<String,String> body){
-        List<Long> longs = Arrays.stream(body.get("permissionIds").split(","))
-                .map(Long::parseLong).collect(Collectors.toList());
-        return roleService.updatePermission(Long.parseLong(body.get("roleId")),
-                longs.toArray(new Long[longs.size()]));
+    	//处理提交过来的数据为空时的处理方式
+    	 List<Long> longs =null;
+    	 try {
+    		 longs = Arrays.stream(body.get("permissionIds").split(",")).map(Long::parseLong).collect(Collectors.toList());
+		} catch (Exception e) {
+			longs=new ArrayList<>();
+		}
+        
+        return roleService.updatePermission(Long.parseLong(body.get("roleId")),longs.toArray(new Long[longs.size()]));
     }
 
 }

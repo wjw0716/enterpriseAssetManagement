@@ -8,6 +8,15 @@
             <div class="row"><div class="col-lg-12"><div class="ibox">
                 <div class="ibox-content">
                     <form method="get" class="form-horizontal validation">
+                         
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">资产编号</label>
+                            <div class="col-sm-10">
+                                <input name="customsId" v-model="data.customsId" type="text" class="form-control" required>
+                                <span class="help-block m-b-none">资产编号是由用户提供的，便于系统内部uuid编号丢失时，定位物品，因此请尽量保持其唯一性.</span>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">资产名称</label>
                             <div class="col-sm-10"><input name="name" v-model="data.name" type="text" class="form-control" required></div>
@@ -20,24 +29,23 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">类型</label>
-                            <div class="col-sm-10"><tt-simple-tree-children name="assetsTypeId" v-model="data.assetsTypeId" :data="getTypeMapById(0)" :func="getTypeMapById"></tt-simple-tree-children></div>
+                            <div class="col-sm-10"><tt-simple-tree-children name="assetsTypeId" v-model="data.assetsTypeId" :data="getTypeMapById(0)" :func="getTypeMapById" required></tt-simple-tree-children></div>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">所属网点</label>
+                            <label class="col-sm-2 control-label">所属部门</label>
                             <div class="col-sm-10">
-                                <select name="pointId" v-model="data.pointId" class="form-control" required>
+                            	<select name="pointId" v-model="data.pointId" class="form-control" required>
                                     <option :value="undefined">---- 请选择 ----</option>
-                                    <option v-for="item in Map.point" :value="item.key">{{ item.value }}</option>
+                                    <option v-for="item in Map.point" :value="item.key" :key="item.key">{{ item.value }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">资产编号</label>
-                            <div class="col-sm-10">
-                                <input name="customsId" v-model="data.customsId" type="text" class="form-control" required>
-                                <span class="help-block m-b-none">资产编号是由用户提供的，便于系统内部uuid编号丢失时，定位物品，因此请尽量保持其唯一性.</span>
+                         <div class="form-group">
+                            <label class="col-sm-2 control-label">购入时间</label>
+                            <div class="col-sm-10">                               
+                                <input name="buyTime" v-model="data.buyTime" type="text" class="form-control datepicker" required  readonly>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -56,49 +64,63 @@
 </template>
 
 <script type="application/javascript">
-    //路由配置
-    RouteConfig.deploy({
-        data: function () {
-            return {
-                headerLabel: {
-                    name: "资产添加",
-                    path: {
-                        parent: [
-                            {url: "/", name: "Home"},
-                            {name: "Asset"}
-                        ],
-                        active: "Add"
-                    }
-                },
-                data:{
-                    name:null,
-                    price:null,
-                    assetsTypeId:null,
-                    pointId:null,
-                    customsId:null,
-                }
-            }
-        },
-        methods:{
-            add:function () {
-                let self = this;
-                if (ValidationUtils.check(".validation")){
-                    Server.asset.add.body(self.data).execute(() => {
-                        self.clear();
-                    })
-                }
-            },
-            clear:function () {
-                let self = this;
-                self.data.customsId = null;
-            },
-            getTypeMapById:function (id) {
-                let self;
-                Server.assetType.getMapByPid.param("pid",id).setAsync(false).execute((data) => {
-                    self = data.object;
-                });
-                return self;
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "资产添加",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "Asset" }],
+          active: "Add"
         }
+      },
+      data: {
+        name: null,
+        price: null,
+        assetsTypeId: null,
+        pointId: "undefined",
+        customsId: null,
+        buyTime: null
+      }
+    };
+  },
+  mounted: function() {
+    let self = this;
+    $(".datepicker").datepicker({
+      language: "zh-CN",
+      todayBtn: "linked",
+      format: "yyyy-mm-dd",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: false,
+      autoclose: true
     });
+  },
+  methods: {
+    add: function() {
+      let self = this;
+      if (ValidationUtils.check(".validation")) {
+       self.data.buyTime = $('input[name=buyTime]').val();
+        Server.asset.add.body(self.data).execute(() => {
+          self.clear();
+        });
+      }
+    },
+    clear: function() {
+      let self = this;
+      self.data.customsId = null;
+    },
+    getTypeMapById: function(id) {
+      let self;
+      Server.assetType.getMapByPid
+        .param("pid", id)
+        .setAsync(false)
+        .execute(data => {
+          self = data.object;
+        });
+      return self;
+    }
+  }
+});
 </script>

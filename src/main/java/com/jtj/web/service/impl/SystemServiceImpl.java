@@ -5,7 +5,6 @@ import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
 import com.jtj.web.dao.SystemDao;
 import com.jtj.web.dao.UserDao;
-import com.jtj.web.entity.Dictionary;
 import com.jtj.web.entity.KeyValue;
 import com.jtj.web.entity.User;
 import com.jtj.web.service.SystemService;
@@ -15,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,7 @@ public class SystemServiceImpl implements SystemService {
     public String init(HttpServletRequest request, HttpServletResponse response) {
         //todo 自动创表增加默认数据
         //todo 跳转至注册页面
-        int count = systemDao.init();
+       // int count = systemDao.init();
         User user = userDao.getUserById(1L);
         if (user == null){
             return "init";

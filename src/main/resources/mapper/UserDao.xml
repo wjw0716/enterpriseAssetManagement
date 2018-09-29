@@ -82,6 +82,15 @@
         VALUES (#{name},#{password},#{description},#{roleId},#{pointId})
     </insert>
 
+    <update id="updatePwd">
+        UPDATE auth_user
+        <set>
+            <if test=" password != '' and password != null ">
+                password = #{password},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
     <update id="update">
         UPDATE auth_user
         <set>

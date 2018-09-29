@@ -12,10 +12,11 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">盘点任务id</label>
                             <div class="col-sm-10">
-                                <select name="pointId" v-model="data.stockTakeId" class="form-control" required>
-                                    <option :value="undefined">---- 请选择 ----</option>
-                                    <option v-for="item in Map.stockTake" :value="item.key">{{ item.value }}</option>
-                                </select>
+                                
+                                 <select name="pointId" v-model="data.stockTakeId" class="form-control" required>
+                                    <option :value="undefined" >---- 请选择 ----</option>
+                                    <option v-for="item in Map.stockTake" :value="item.key" :key="item.key">{{ item.value }}</option>
+                                </select> 
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -23,7 +24,7 @@
                             <label class="col-sm-2 control-label">uuid</label>
                             <div class="col-sm-10">
                                 <input name="uuid" v-model="data.uuid" type="text" class="form-control">
-                                <span class="help-block m-b-none">uuid与之下资产信息选填其一.</span>
+                                <span class="help-block m-b-none">uuid与之下资产编号选填其一.</span>
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -45,11 +46,11 @@
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">所属网点</label>
+                            <label class="col-sm-2 control-label">所属部门</label>
                             <div class="col-sm-10">
                                 <select name="pointId" v-model="data.pointId" class="form-control">
                                     <option :value="undefined">---- 请选择 ----</option>
-                                    <option v-for="item in Map.point" :value="item.key">{{ item.value }}</option>
+                                    <option v-for="item in Map.point" :value="item.key" :key="item.key">{{ item.value }}</option>
                                 </select>
                             </div>
                         </div>
@@ -87,7 +88,7 @@
                     uuid:null,
                     name:null,
                     assetsTypeId:null,
-                    pointId:null,
+                    pointId:"undefined",
                     customsId:null
                 }
             }

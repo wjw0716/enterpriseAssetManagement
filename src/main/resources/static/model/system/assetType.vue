@@ -6,10 +6,8 @@
         <div class="wrapper wrapper-content animated fadeInRight"><!-- animated -->
 
             <div class="row">
-                <div class="col-lg-3"><div class="ibox tt-from-table"><div class="ibox-content">
-                    <div id="menu-tree"></div>
-                </div></div></div>
-                <div class="col-lg-9">
+               
+                <div class="col-lg-12">
 
                     <!-- 表单 -->
                     <div class="row"><div class="col-lg-12"><div class="ibox tt-from-table">
@@ -22,7 +20,7 @@
                                     <div class="btn-group">
                                         <button @click="showAddModal()" v-shiro:permission="'sys:assetType:add'" class="btn btn-outline btn-primary" type="button">新增</button>
                                         <button @click="showUpdateModal(tableSelectData[0])" v-shiro:permission="'sys:assetType:update'" v-if="hasOneChecked" class="btn btn-outline btn-primary" type="button">修改</button>
-                                        <button @click="deleteAll()" v-shiro:permission="'sys:assetType:delete'" v-if="hasOneChecked" class="btn btn-outline btn-danger" type="button">删除</button>
+                                        <button @click="deleteOne()" v-shiro:permission="'sys:assetType:delete'" v-if="hasOneChecked" class="btn btn-outline btn-danger" type="button">删除</button>
                                     </div>
                                     <div class="btn-group">
                                         <button @click="getTableList" class="btn btn-primary" type="button">搜索</button>
@@ -37,7 +35,7 @@
                     <div class="row"><div class="col-lg-12"><div class="ibox">
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <tt-table v-bind:data="tableData" :selection = "true" v-model="tableSelectData">
+                                <tt-table v-bind:data="tableData" :selection = "true"  :selectOne="true" v-model="tableSelectData">
                                     <template slot="tt-body-operation" scope="props">
                                         <button @click="showUpdateModal(props.row)" v-shiro:permission="'sys:assetType:update'" class="btn btn-table btn-primary btn-rounded" type="button">修改</button>
                                     </template>
@@ -61,7 +59,6 @@
                     <div class="col-sm-12"><!--<div class="col-sm-6 b-r">-->
                         <h4 class="m-t-none m-b">基本信息</h4>
                         <tt-simple-input label="名称" v-model="fromModalData.data.name" required></tt-simple-input>
-                        <tt-simple-tree-root-v2 label="父节点" v-model="fromModalData.data.pid" :data="tree.assetType" :option="{key:'id',value:'name'}"></tt-simple-tree-root-v2>
                         <tt-simple-input label="排序" v-model="fromModalData.data.order" required></tt-simple-input>
                     </div>
                 </div>
@@ -89,7 +86,7 @@
         data:function () {
             return {
                 headerLabel:{
-                    name:"物资类型管理",
+                    name:"资产类型管理",
                     path:{
                         parent:[
                             {url:"/",name:"Home"},
@@ -104,9 +101,8 @@
                 },
                 tableData:{
                     title:{
-                        id:"类型id",
+                      //  id:"类型id",
                         name:"名称",
-                        pid:"父id",
                         order:"排序",
                         operation:{name:"操作",width:"60px"}
                     },
@@ -139,14 +135,11 @@
         created:function () {
             let self = this;
             this.getTableList();
-            Server.assetType.getTypeTree.execute(data => {
-                self.tree.assetType = data.object;
-            });
         },
         beforeMount:function () {
         },
         mounted:function () {
-            this.updateTree();
+           
         },
         methods: {
             getTablePaginationList:function (index,size) {
@@ -177,6 +170,8 @@
                         func.body(self.fromModalData.data).execute(() => {
                             self.fromModal.hide();
                             self.getTableList();
+                            
+                           
                         })
                     }
                 };
@@ -184,7 +179,10 @@
             deleteOne:function () {
                 let self = this;
                 SweetAlertUtils.show().sure(function () {
-                    Server.assetType.deleteById.path("id",self.tableSelectData[0].id).execute(() => self.getTableList());
+                    Server.assetType.deleteById.path("id",self.tableSelectData[0].id).execute(() =>{
+                        self.getTableList();
+                       
+                    });
                 });
             },
             showAddModal:function () {
@@ -199,22 +197,6 @@
                 this.fromModalData.data = JsonUtils.copy(obj);
                 this.fromModalData.submit = this.getSubmitFunc(Server.assetType.update);
                 this.fromModal.show();
-            },
-            updateTree:function () {
-                let self = this;
-                Server.assetType.getTypeTree.execute(data => {
-                    let treeData = data.object;
-                    App.changeListTreeForJsTree(treeData);
-                    $('#menu-tree').jstree({
-                        'core' : {
-                            'data' :treeData
-                        }
-                    }).on('changed.jstree', function (e, data) {
-                        self.conditions.pid = self.conditions.pid === data.node.id ? null : data.node.id;
-                        self.pname = data.node.text;
-                        self.getTableList();
-                    });
-                });
             }
         }
     });

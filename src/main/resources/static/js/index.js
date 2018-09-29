@@ -27,7 +27,7 @@ const App = new Vue({
         }
     },
     mounted:function () {
-        this.updateSidebarTree();
+        //this.updateSidebarTree();
     },
     methods:{
         logout:function () {

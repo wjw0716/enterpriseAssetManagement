@@ -12,7 +12,8 @@ public class User extends BaseEntity {
 
     private String name;//用户名
     private String password;//密码
-    private String description;//密码
+    private String description;//描述
+    private boolean status;//状态
     private Long roleId;//角色id
     private Role role;//角色对象
     private Long pointId;//角色id
@@ -92,4 +93,13 @@ public class User extends BaseEntity {
     public void setEditPoints(List<Point> editPoints) {
         this.editPoints = editPoints;
     }
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+    
 }

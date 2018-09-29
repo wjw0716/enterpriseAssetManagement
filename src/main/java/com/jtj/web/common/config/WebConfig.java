@@ -1,7 +1,6 @@
 package com.jtj.web.common.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,14 +19,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/","about");
-        registry.addViewController("/about").setViewName("about");
-        registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/index").setViewName("index");
+        //registry.addViewController("/about").setViewName("about");
+        //registry.addViewController("/login").setViewName("login");
+       // registry.addViewController("/index").setViewName("index");
     }
 
-    @Override
+    /*@Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
-    }
+    }*/
 }

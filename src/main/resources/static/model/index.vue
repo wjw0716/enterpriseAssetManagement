@@ -22,9 +22,8 @@
                 </div>
             </div>
 
-
             <div class="row">
-                <div v-for="item in borrow" class="col-lg-3">
+                <div v-for="item in borrow" class="col-lg-3" :key="item.id">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <span class="label label-success pull-right">{{item.expectReturnTime}}</span>
@@ -32,7 +31,7 @@
                         </div>
                         <div class="ibox-content">
                             <h1 class="no-margins">{{item.asset.name}}</h1>
-                            <!--<div class="stat-percent font-bold text-success">在借</div>-->
+                             <div class="stat-percent font-bold text-success">在借</div> 
                             <small>{{item.remark}}</small>
                         </div>
                     </div>
@@ -64,10 +63,10 @@
                         <div class="form-group tt-from-input">
                             <label>预期时间</label>
                             <div>
-                                <input id="expect-return-time" name="time" type="text" class="form-control datepicker">
+                                <input id="expect-return-time" name="time" type="text" class="form-control datepicker" readonly>
                             </div>
                         </div>
-                        <tt-simple-input label="uuid" v-model="borrowModalData.data.asset.uuid" required></tt-simple-input>
+                        <tt-simple-input label="uuid" v-model="borrowModalData.data.asset.uuid" required ></tt-simple-input>
                     </div>
                     <!--<div class="col-sm-6">
                         <h4>权限配置</h4>
@@ -87,58 +86,62 @@
 
 
 <script type="application/javascript">
-    //路由配置
-    RouteConfig.deploy({
-        data: function () {
-            return {
-                borrow:[],
-                borrowModalData:{
-                    title:"租借",
-                    data:{
-                        uuid:null,
-                        asset:{
-
-                        }
-                    },
-                    empty:null,
-                    submit:function () {}
-                }
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      borrow: [],
+      borrowModalData: {
+        title: "租借",
+        data: {
+          uuid: null,
+          asset: {}
         },
-        computed:{
-            borrowModal:function () {
-                return new ModalBuilder("#index-borrow-modal");
-            }
-        },
-        created:function () {
-            this.getBorrowItemInfo();
-        },
-        mounted:function () {
-            $('.datepicker').datepicker({
-                todayBtn: "linked",
-                format: 'yyyy-mm-dd',
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true
-            })
-        },
-        methods: {
-            getBorrowItemInfo:function () {
-                let self = this;
-                Server.borrow.me.execute(data => self.borrow = data.object);
-            },
-            showBorrowModal:function () {
-                let self = this;
-                self.borrowModalData.submit = function () {
-                    self.borrowModalData.data.expectReturnTime = $('#expect-return-time').val();
-                    Server.borrow.borrowBySelf.body(self.borrowModalData.data).execute(data => {
-                        self.getBorrowItemInfo();
-                        self.borrowModal.hide();
-                    });
-                };
-                self.borrowModal.show();
-            }
-        }
+        empty: null,
+        submit: function() {}
+      }
+    };
+  },
+  computed: {
+    borrowModal: function() {
+      return new ModalBuilder("#index-borrow-modal");
+    }
+  },
+  created: function() {
+    this.getBorrowItemInfo();
+  },
+  mounted: function() {
+    $(".datepicker").datepicker({
+      language: "zh-CN",
+      startDate: "0d",
+      todayBtn: "linked",
+      format: "yyyy-mm-dd",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: false,
+      autoclose: true
     });
+  },
+  methods: {
+    getBorrowItemInfo: function() {
+      let self = this;
+      Server.borrow.me.execute(data => (self.borrow = data.object));
+    },
+    showBorrowModal: function() {
+      let self = this;
+      self.borrowModalData.submit = function() {
+        self.borrowModalData.data.expectReturnTime = $(
+          "#expect-return-time"
+        ).val();
+        Server.borrow.borrowBySelf
+          .body(self.borrowModalData.data)
+          .execute(data => {
+            self.getBorrowItemInfo();
+            self.borrowModal.hide();
+          });
+      };
+      self.borrowModal.show();
+    }
+  }
+});
 </script>

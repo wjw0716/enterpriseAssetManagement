@@ -33,7 +33,7 @@
                     }
                 },
                 pieData:{
-                    labels: ["正常","租借","维修","报废"],
+                    labels: ["正常","领用","维修","报废"],
                     datasets: [{
                         data: [300,50,100,100],
                         backgroundColor: ["#a3e1d4","#dedede","#b5b8cf","#b7cfc8"]

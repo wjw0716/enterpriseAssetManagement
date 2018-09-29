@@ -2,8 +2,6 @@ package com.jtj.web.entity;
 
 import com.jtj.web.common.BaseEntity;
 
-import java.math.BigDecimal;
-
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)
  * 2017/2/22.

@@ -3,6 +3,7 @@ package com.jtj.web.entity;
 import com.jtj.web.common.BaseEntity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)
@@ -19,6 +20,8 @@ public class Asset extends BaseEntity {
     private Integer assetsTypeId;
     private String assetsTypeName;
     private Long pointId;
+    //购入时间
+    private Date buyTime;
 
     public String getUuid() {
         return uuid;
@@ -90,5 +93,16 @@ public class Asset extends BaseEntity {
 
     public void setAssetsTypeName(String assetsTypeName) {
         this.assetsTypeName = assetsTypeName;
+ 
     }
+
+	public Date getBuyTime() {
+		return buyTime;
+	}
+
+	public void setBuyTime(Date buyTime) {
+		this.buyTime = buyTime;
+	}
+
+	
 }

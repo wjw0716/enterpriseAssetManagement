@@ -15,7 +15,7 @@ import java.util.List;
 public class MyAopAllianceAnnotationsAuthorizingMethodInterceptor
         extends AopAllianceAnnotationsAuthorizingMethodInterceptor {
     public MyAopAllianceAnnotationsAuthorizingMethodInterceptor() {
-        List<AuthorizingAnnotationMethodInterceptor> interceptors = new ArrayList(5);
+        List<AuthorizingAnnotationMethodInterceptor> interceptors = new ArrayList<AuthorizingAnnotationMethodInterceptor>(5);
         AnnotationResolver resolver = new SpringAnnotationResolver();
         interceptors.add(new RoleAnnotationMethodInterceptor(resolver));
         interceptors.add(new MyPermissionAnnotationMethodInterceptor(resolver));

@@ -4,7 +4,6 @@ import com.jtj.web.common.Constant;
 import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
 import com.jtj.web.dao.AssetDao;
-import com.jtj.web.dao.BorrowDao;
 import com.jtj.web.entity.Asset;
 import com.jtj.web.service.AssetOperationRecordService;
 import com.jtj.web.service.AssetService;
@@ -24,8 +23,6 @@ public class AssetServiceImpl implements AssetService {
     private AssetDao assetDao;
     @Autowired
     private AssetOperationRecordService assetOperationRecordService;
-    @Autowired
-    private BorrowDao borrowDao;
 
     @Override
     public AssetDao getRepository() {

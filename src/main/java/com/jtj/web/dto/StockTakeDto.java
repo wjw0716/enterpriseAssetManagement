@@ -1,7 +1,6 @@
 package com.jtj.web.dto;
 
 import com.jtj.web.common.BaseDto;
-import com.jtj.web.common.BaseEntity;
 
 import java.util.Date;
 

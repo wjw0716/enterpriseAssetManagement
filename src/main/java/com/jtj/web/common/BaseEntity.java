@@ -1,13 +1,14 @@
 package com.jtj.web.common;
 
-import java.io.Serializable;
 import java.time.Instant;
 
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)
  * 2017/1/22.
  */
-public class BaseEntity implements Serializable {
+//XXX: 删除序列化
+//public class BaseEntity implements Serializable {
+	public class BaseEntity {
 
     private Long id;
     private Instant createTime;

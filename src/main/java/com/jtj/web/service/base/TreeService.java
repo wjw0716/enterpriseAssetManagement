@@ -28,8 +28,14 @@ public interface TreeService<T extends TreeEntity<T>> {
     }
 
     default void refreshTreeData(){
-        if (getTreeListResource() != null) getTreeListResource().clear();
-        if (getTreeMapResource() != null) getTreeMapResource().clear();
+		if (getTreeListResource() != null) {
+			getTreeListResource().clear();
+		}
+			
+		if (getTreeMapResource() != null) {
+			getTreeMapResource().clear();
+		}
+			
     }
 
     default boolean isEmpty(List<?> list){

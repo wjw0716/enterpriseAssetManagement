@@ -8,6 +8,8 @@ import org.springframework.cglib.core.Converter;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class BeanUtils {
 
     //bean copy
@@ -25,7 +27,6 @@ public class BeanUtils {
         copier.copy(source,target,converter);
         return target;
     }
-
     //bean to map
     public static Map<String, Object> toMap(Object obj) {
         Map<String, Object> map = new HashMap<>();
@@ -33,4 +34,5 @@ public class BeanUtils {
         map.putAll(m);
         return map;
     }
+    
 }

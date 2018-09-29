@@ -104,6 +104,7 @@ public class AssetTypeServiceImpl implements AssetTypeService {
             throw new AssetException(new ResultDto<>(ResultCode.NOT_DELETE_USED));
         }
         assetTypeDao.delete(new Long[]{id});
+        refreshTreeData();
         result.setResultCode(ResultCode.SUCCESS_DELETE);
         result.setMessage("请刷新当前页面！");
         return result;

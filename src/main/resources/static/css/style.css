@@ -5,9 +5,9 @@
 /*
 todo change address
  */
-@import url("/css/font.css");
+
 /*
- *
+ * @import url("/css/font.css");
  *   INSPINIA - Responsive Admin Theme
  *   version 2.6.2
  *
@@ -4600,9 +4600,9 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 .logo-name {
   color: #e6e6e6;
-  font-size: 180px;
-  font-weight: 800;
-  letter-spacing: -10px;
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: -2px;
   margin-bottom: 0;
 }
 .middle-box h1 {

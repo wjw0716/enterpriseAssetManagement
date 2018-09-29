@@ -8,7 +8,7 @@ const AppMenu = [
     },
     {
         code:"Asset",
-        name:"资源管理",
+        name:"资产管理",
         permission:"asset",
         icon:"fa-th-large",
         list:[
@@ -23,8 +23,8 @@ const AppMenu = [
         permission:"report",
         icon:"fa-pie-chart",
         list:[
-            {name:"资产总揽",permission:"report:overall",url:"/report/overall",staticUrl:"/model/report/overall.vue"},
-            {name:"借还报表",permission:"report:borrow",url:"/report/borrow",staticUrl:"/model/report/borrow.vue"}
+            {name:"资产总揽",permission:"report:getOverall",url:"/report/overall",staticUrl:"/model/report/overall.vue"},
+            {name:"借还报表",permission:"report:getBorrow",url:"/report/borrow",staticUrl:"/model/report/borrow.vue"}
         ]
     },
     {
@@ -34,22 +34,22 @@ const AppMenu = [
         icon:"fa-certificate",
         list:[
             {name:"任务",permission:"stockTake:getList",url:"/stockTake/task",staticUrl:"/model/stockTake/task.vue"},
-            {name:"明细",permission:"stockTake:item:getList",url:"/stockTake/item",staticUrl:"/model/stockTake/item.vue"},
-            {name:"任务",permission:"stockTake:handle",url:"/stockTake/handle",staticUrl:"/model/stockTake/handle.vue"}
+            {name:"明细",permission:"stockTake:getItemList",url:"/stockTake/item",staticUrl:"/model/stockTake/item.vue"},
+            {name:"盘点",permission:"stockTake:handle",url:"/stockTake/handle",staticUrl:"/model/stockTake/handle.vue"}
         ]
     },
     {
         code:"System",
         name:"系统管理",
-        permission:["sys","system-administrator-permission"],
+        permission:["sys","system-administrator-role"],
         logical:Logical.OR,
         icon:"fa-cogs",
         list:[
             {name:"用户管理",permission:["sys:user","system-administrator-permission"],logical:Logical.OR,url:"/system/user",staticUrl:"/model/system/user.vue"},
             {name:"角色管理",role:"system-administrator-role",url:"/system/role",staticUrl:"/model/system/role.vue"},
             {name:"权限管理",role:"system-administrator-role",permission:"sys:develop",url:"/system/permission",staticUrl:"/model/system/permission.vue"},
-            {name:"资源类型",permission:"sys:assetType",url:"/system/assetType",staticUrl:"/model/system/assetType.vue"},
-            {name:"网点管理",permission:["sys:point","system-administrator-permission"],logical:Logical.OR,url:"/system/point",staticUrl:"/model/system/point.vue"},
+            {name:"资产类型",permission:"sys:assetType",url:"/system/assetType",staticUrl:"/model/system/assetType.vue"},
+            {name:"部门管理",permission:["sys:point","system-administrator-permission"],logical:Logical.OR,url:"/system/point",staticUrl:"/model/system/point.vue"},
         ]
     }
 ];

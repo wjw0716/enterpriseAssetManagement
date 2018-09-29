@@ -2,10 +2,7 @@ package com.jtj.web.service;
 
 import com.jtj.web.common.Constant;
 import com.jtj.web.common.ResultDto;
-import com.jtj.web.dto.AssetDto;
-import com.jtj.web.entity.Asset;
 import com.jtj.web.entity.AssetOperationRecord;
-import com.jtj.web.entity.Borrow;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

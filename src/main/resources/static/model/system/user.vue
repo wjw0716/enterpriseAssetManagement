@@ -66,7 +66,7 @@
                     <div class="col-sm-6">
                         <h4>额外 More</h4>
                         <p>个性化的介绍.</p>
-                        <tt-simple-tree-root-v2 label="网点" v-model="fromModalData.data.pointId" :data="tree.point" :option="{key:'id',value:'name'}" root-required></tt-simple-tree-root-v2>
+                        <tt-simple-tree-root-v2 label="部门" v-model="fromModalData.data.pointId" :data="tree.point" :option="{key:'id',value:'name'}" root-required></tt-simple-tree-root-v2>
                         <tt-simple-input label="描述&简介" v-model="fromModalData.data.description" type="textarea" row="5" minlength="6"></tt-simple-input>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
             <form role="form" class="validation">
                 <div class="row">
                     <div class="col-sm-12">
-                        <tt-simple-input type="password" label="密码" v-model="pointModalData.data.password"></tt-simple-input>
+                        <tt-simple-input  label="密码" v-model="pointModalData.data.password" type="password" required minlength="6"></tt-simple-input>
                     </div>
                 </div>
                 <div class="row">
@@ -143,10 +143,10 @@
                     empty:null,
                     submit:function () {}
                 },
-                pointId:"15",
+                //pointId:"15",
                 pointModalData:{
                     data:{
-                        pointId:"15"
+                        
                     },
                     submit:function () {}
                 },
@@ -235,11 +235,18 @@
             showPasswordModal:function (obj) {
                 //todo 接口待写
                 let self = this;
-                self.pointModalData.submit = function () {
-                    ToastrUtils.show("成功","",1);
-                    $("#password-modal").modal("hide");
-                };
+               // alert(JSON.stringify(obj));
                 $("#password-modal").modal("show");
+                self.pointModalData.data.id=obj.id;
+                self.pointModalData.submit = function () {
+                    if (ValidationUtils.check(".validation")){
+                        Server.user.updatePwd.body(self.pointModalData.data).execute(() => {
+                            $("#password-modal").modal("hide");
+                        })
+                    }
+                   
+                };
+               
             }
         }
     });

@@ -1,9 +1,14 @@
 package com.jtj.web.service.base;
 
-import com.jtj.web.common.*;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jtj.web.common.BaseDto;
+import com.jtj.web.common.BaseEntity;
+import com.jtj.web.common.PageDto;
+import com.jtj.web.common.ResultCode;
+import com.jtj.web.common.ResultDto;
 import com.jtj.web.common.exception.AssetException;
 import com.jtj.web.dao.BaseDao;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)

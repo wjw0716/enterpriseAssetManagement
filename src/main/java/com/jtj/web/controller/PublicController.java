@@ -4,10 +4,8 @@ import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
 import com.jtj.web.dto.UsernamePasswordTokenDto;
 import com.jtj.web.entity.KeyValue;
-import com.jtj.web.service.PointService;
 import com.jtj.web.service.RoleService;
 import com.jtj.web.service.SystemService;
-import com.jtj.web.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -27,24 +25,21 @@ import java.util.List;
 public class PublicController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private RoleService roleService;
     @Autowired
     private SystemService systemService;
-    @Autowired
-    private PointService pointService;
 
     @ApiOperation("用户登录")
     @ResponseBody
     @PostMapping("/login")
     public ResultDto<Object> login(@RequestBody UsernamePasswordTokenDto token){
+    	
         Subject subject = SecurityUtils.getSubject();
         token.setRememberMe(false);
         subject.login(token);
 
         //触发获取权限
-        SecurityUtils.getSubject().hasRole("doGetAuthorizationInfo");
+        subject.hasRole("doGetAuthorizationInfo");
 
         ResultDto<Object> result = new ResultDto<>();
         result.setResultCode(ResultCode.SUCCESS);

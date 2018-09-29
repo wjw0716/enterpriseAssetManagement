@@ -50,18 +50,17 @@
             </div></div></div>
         </div>
 
-        <!-- 添加弹出窗 -->
+        <!-- 添加角色弹出窗 -->
         <tt-modal id="form-modal" :title="fromModalData.title" size="sm">
             <form role="form" class="validation">
                 <div class="row">
                     <div class="col-sm-12"><!--<div class="col-sm-6 b-r">-->
                         <h4 class="m-t-none m-b">基本信息</h4>
-                        <tt-simple-input label="角色" v-model="fromModalData.data.name" required></tt-simple-input>
-                        <tt-simple-select label="状态" v-model="fromModalData.data.status" :data="Map.roleStatus" show-undefined required></tt-simple-select>
+                        <tt-simple-input label="角色" name="name" v-model="fromModalData.data.name" required></tt-simple-input>
+                        <tt-simple-select label="状态" name="status" v-model="fromModalData.data.status" :data="Map.roleStatus" show-undefined required></tt-simple-select>
+                   
                     </div>
-                    <!--<div class="col-sm-6">
-                        <h4>权限配置</h4>
-                    </div>-->
+                   
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -72,29 +71,14 @@
             </form>
         </tt-modal>
 
-        <!-- 权限弹出框 -->
-        <!--<tt-modal id="permission-modal" title="配置权限" size="sm">
-            <form role="form" class="validation">
-                <div class="row">
-                    <div class="col-sm-12">&lt;!&ndash;<div class="col-sm-6 b-r">&ndash;&gt;
-                        <div id="permission-tree"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button @click="permissionModalData.submit" class="btn btn-sm btn-primary pull-right m-t-n-xs" type="button"><strong>确认</strong></button>
-                        <button data-dismiss="modal"  class="btn btn-sm btn-default pull-right m-t-n-xs tt-modal-cancel" type="button"><strong>取消</strong></button>
-                    </div>
-                </div>
-            </form>
-        </tt-modal>-->
+      
         <tt-modal id="permission-modal" title="配置权限">
             <div class="row">
                 <div class="col-sm-12">
                     <p>请选择当前角色所需的权限（点击选择，>>全选）</p>
                     <form id="form" action="#" class="wizard-big">
                         <select class="form-control dual_select" multiple>
-                            <option v-for="item in permissionModalData.items" :value="item.id" :selected="item.isSelected">
+                            <option v-for="item in permissionModalData.items" :key="item.id" :value="item.id" :selected="item.isSelected">
                                 {{item.code+"("+item.name+")"}}
                             </option>
                         </select>
@@ -216,8 +200,10 @@
             },
             getSubmitFunc:function (func) {
                 let self = this;
+               
                 return function () {
                     if (ValidationUtils.check(".validation")){
+                        
                         func.body(self.fromModalData.data).execute(() => {
                             self.fromModal.hide();
                             self.getTableList();

@@ -1,6 +1,5 @@
 package com.jtj.web.dto;
 
-import com.jtj.web.common.BaseDto;
 import com.jtj.web.common.BasePointDto;
 
 import java.math.BigDecimal;

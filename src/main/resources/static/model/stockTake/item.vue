@@ -15,7 +15,7 @@
                         <tt-simple-input label="资产编号" v-model="conditions.customsId"></tt-simple-input>
                         <tt-simple-input label="名称" v-model="conditions.name"></tt-simple-input>
                         <tt-simple-tree-root-v2 label="类型" v-model="conditions.assetsTypeId" :data="tree.assetType" :option="{key:'id',value:'name'}"></tt-simple-tree-root-v2>
-                        <tt-simple-select label="网点" v-model="conditions.pointId" :data="Map.point" show-undefined></tt-simple-select>
+                        <tt-simple-select label="部门" v-model="conditions.pointId" :data="Map.point" show-undefined></tt-simple-select>
                         <tt-simple-select label="状态" v-model="conditions.status" :data="Map.stockTakeItemStatus" show-undefined></tt-simple-select>
 
                         <div class="btn-toolbar pull-right" role="toolbar">
@@ -61,7 +61,7 @@
         data:function () {
             return {
                 headerLabel:{
-                    name:"盘点明显",
+                    name:"盘点明细",
                     path:{
                         parent:[
                             {url:"/",name:"Home"},

@@ -66,7 +66,7 @@ public class StockTakeController {
     @RequiresPermissions("stockTake:updateAmount")
     public ResultDto<StockTake> updateAmount(@RequestBody Map<String,Object> map) {
 
-        return stockTakeService.updateAmount((Long) map.get("id"));
+        return stockTakeService.updateAmount(Long.valueOf(String.valueOf(map.get("id"))));
     }
 
     @GetMapping("/getItemList")

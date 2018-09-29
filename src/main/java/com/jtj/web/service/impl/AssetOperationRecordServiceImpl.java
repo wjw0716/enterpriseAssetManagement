@@ -1,5 +1,15 @@
 package com.jtj.web.service.impl;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.jtj.web.common.Constant;
 import com.jtj.web.common.ResultCode;
 import com.jtj.web.common.ResultDto;
@@ -7,14 +17,6 @@ import com.jtj.web.dao.AssetOperationRecordDao;
 import com.jtj.web.entity.AssetOperationRecord;
 import com.jtj.web.entity.User;
 import com.jtj.web.service.AssetOperationRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Created by jiang (jiang.taojie@foxmail.com)

@@ -46,6 +46,7 @@ const ServerUtils = {
 ServerUtils.base("user","role","permission","assetType","point","asset","report","stockTake");
 ServerUtils.config({
     user:{
+    	updatePwd:new WebBuilder("/user/updatePwd",{type:"put"}),
     },
     role:{
         getPermission:new WebBuilder("/role/getPermission",{type:"get"}),

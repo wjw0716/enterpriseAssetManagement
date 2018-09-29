@@ -11,10 +11,10 @@
                     <form role="form" class="form-inline">
 
                         <tt-simple-input label="uuid" v-model="conditions.uuid"></tt-simple-input>
-                        <tt-simple-input label="资产编号" v-model="conditions.customsId"></tt-simple-input>
-                        <tt-simple-input label="名称" v-model="conditions.name"></tt-simple-input>
-                        <tt-simple-tree-root-v2 label="类型" v-model="conditions.assetsTypeId" :data="tree.assetType" :option="{key:'id',value:'name'}"></tt-simple-tree-root-v2>
-                        <tt-simple-select label="网点" v-model="conditions.pointId" :data="Map.point" show-undefined></tt-simple-select>
+                        <tt-simple-input label="资产编号 " v-model="conditions.customsId"></tt-simple-input>
+                        <tt-simple-input label="名称 " v-model="conditions.name"></tt-simple-input>
+                        <tt-simple-tree-root-v2 label="类型 " v-model="conditions.assetsTypeId" :data="tree.assetType" :option="{key:'id',value:'name'}"></tt-simple-tree-root-v2>
+                        <tt-simple-select label="部门 " v-model="conditions.pointId" :data="Map.point" show-undefined></tt-simple-select>
 
                         <div class="btn-toolbar pull-right" role="toolbar">
                             <div class="btn-group">
@@ -38,7 +38,7 @@
                     <div class="table-responsive">
                         <tt-table v-bind:data="tableData" :selection = "true" v-model="tableSelectData">
                             <template slot="tt-body-operation" scope="props">
-                                <button @click="showQRCodeModal(props.row)" class="btn btn-table btn-primary btn-rounded" type="button">QRCode</button>
+                                <button @click="showQRCodeModal(props.row)" class="btn btn-table btn-primary btn-rounded" type="button">二维码</button>
                                 <button @click="showOperationRecordModal(props.row)" v-shiro:permission="'asset:record:getByUuid'" class="btn btn-table btn-primary btn-rounded" type="button">操作记录</button>
                             </template>
                         </tt-table>
@@ -99,9 +99,17 @@
 
         <!-- QRCode -->
         <tt-modal id="QRCode-modal" title="二维码" size="sm">
-            <div class="row">
-                <div id="qrcodeCanvas" class="col-sm-12"></div>
-            </div>
+          
+                <div class="row">
+                    <div id="qrcodeCanvas" class="col-sm-12 img-responsive" style="padding:6px"></div>
+                </div>
+                <!-- 打印二维码 -->
+                <img id="qrcodeImage"  />
+               
+                 <div class="row">
+                    <button @click="printQr" class="btn btn-sm btn-primary pull-right m-t-n-xs" type="button"><strong>打印</strong></button>
+                </div>
+  
         </tt-modal>
 
         <div class="clearfix"></div>
@@ -202,6 +210,19 @@
         mounted:function () {
         },
         methods: {
+            printQr:function(){
+            var img = document.getElementById("qrcodeImage"); // get image element
+            var canvas  = document.getElementsByTagName("canvas")[0];  // get canvas element
+            img.src = canvas.toDataURL();                     // update image
+ 
+           $("#qrcodeImage").jqprint({
+				 debug: true, 
+				 importCSS: true, 
+				 printContainer: true, 
+				 operaSupport: false
+			 });
+               
+            },
             getTablePaginationList:function (index,size) {
                 let self = this;
                 self.conditions.begin = (index - 1) * size;

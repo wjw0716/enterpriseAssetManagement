@@ -2,7 +2,6 @@ package com.jtj.web.dto;
 
 import com.jtj.web.common.BaseDto;
 
-import java.util.Date;
 
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)

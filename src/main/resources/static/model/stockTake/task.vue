@@ -171,7 +171,7 @@
                 let self = this;
                 SweetAlertUtils.show().sure(function () {
                     let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.stockTake.delete.param("ids=",ids).execute(() => self.getTableList());
+                    Server.stockTake.delete.param("ids",ids).execute(() => self.getTableList());
                 });
             },
             showUpdateModal:function (obj) {

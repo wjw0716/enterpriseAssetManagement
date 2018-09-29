@@ -69,7 +69,7 @@ public class ShiroConfig {
         filterChainDefinitionMapping.put("/about", "anon");
         filterChainDefinitionMapping.put("/public/**", "anon");
         filterChainDefinitionMapping.put("/css/**", "anon");
-        filterChainDefinitionMapping.put("/example/**", "anon");
+        //filterChainDefinitionMapping.put("/example/**", "anon");
         filterChainDefinitionMapping.put("/font-awesome/**", "anon");
         filterChainDefinitionMapping.put("/fonts/**", "anon");
         filterChainDefinitionMapping.put("/img/**", "anon");
