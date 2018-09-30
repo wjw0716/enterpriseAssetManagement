@@ -36,6 +36,7 @@ Vue.component("tt-menu-root", {
                     return createElement(self.isEmpty(self.data.url) ? "a" : "router-link", { attrs: { to: self.data.url } }, elements);
                 }
             } else if (typeof (self.data.permission) === "object") {
+            	
                 //超级管理员控制菜单显示
                 // sessionRole 用户的角色
                 if (element.indexOf(self.data.permission[0]) > -1 && sessionRole.length > 1 && sessionRole[1] === self.data.permission[1]) {
@@ -73,15 +74,32 @@ Vue.component("tt-menu-second", {
         }
         return createElement("ul", { class: ["nav", "nav-second-level", "collapse"] }, $.map(this.data, function (item) {
 
-            //console.log(item);
+           // console.log(item);
             for (let index = 0; index < sessionPermission.length; index++) {
                 const element = sessionPermission[index];
-                if(element===item.permission){
-                    let elements = [];
-                    //当前配置不包含图标，故删除相关
-                    elements.push(item.name);
-                    return createElement("li", {class:{'active':item.isActive}}, [createElement(self.isEmpty(item.url)?"a":"router-link",{attrs:{to:item.url}},elements)]);
-                }else{
+               
+
+                if(typeof(item.permission)==="string"){
+                    if(element.indexOf(item.permission)>-1){
+                        let elements = [];
+                        //当前配置不包含图标，故删除相关
+                        elements.push(item.name);
+                        return createElement("li", {class:{'active':item.isActive}}, [createElement(self.isEmpty(item.url)?"a":"router-link",{attrs:{to:item.url}},elements)]);
+                    }else{
+                        continue;
+                    }
+                    
+                }else if(typeof(item.permission)==="object"){
+                	 if(element.indexOf(item.permission[0])>-1){
+                         let elements = [];
+                         //当前配置不包含图标，故删除相关
+                         elements.push(item.name);
+                         return createElement("li", {class:{'active':item.isActive}}, [createElement(self.isEmpty(item.url)?"a":"router-link",{attrs:{to:item.url}},elements)]);
+                     }else{
+                         continue;
+                     }
+                }
+                else {
                     continue;
                 }
             }

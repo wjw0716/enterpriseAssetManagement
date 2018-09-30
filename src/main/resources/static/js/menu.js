@@ -46,8 +46,8 @@ const AppMenu = [
         icon:"fa-cogs",
         list:[
             {name:"用户管理",permission:["sys:user","system-administrator-permission"],logical:Logical.OR,url:"/system/user",staticUrl:"/model/system/user.vue"},
-            {name:"角色管理",role:"system-administrator-role",url:"/system/role",staticUrl:"/model/system/role.vue"},
-            {name:"权限管理",role:"system-administrator-role",permission:"sys:develop",url:"/system/permission",staticUrl:"/model/system/permission.vue"},
+            {name:"角色管理",permission:["sys:role","system-administrator-permission"],role:"system-administrator-role",url:"/system/role",staticUrl:"/model/system/role.vue"},
+            {name:"权限管理",permission:"sys:develop",role:"system-administrator-role",url:"/system/permission",staticUrl:"/model/system/permission.vue"},
             {name:"资产类型",permission:"sys:assetType",url:"/system/assetType",staticUrl:"/model/system/assetType.vue"},
             {name:"部门管理",permission:["sys:point","system-administrator-permission"],logical:Logical.OR,url:"/system/point",staticUrl:"/model/system/point.vue"},
         ]
