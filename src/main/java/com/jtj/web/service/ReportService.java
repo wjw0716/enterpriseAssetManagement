@@ -1,9 +1,11 @@
 package com.jtj.web.service;
 
-import com.jtj.web.common.ResultDto;
+import java.time.LocalDate;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import com.jtj.web.common.ResultDto;
 
 /**
  * Created by jiang (jiang.taojie@foxmail.com)
@@ -15,4 +17,6 @@ public interface ReportService {
     ResultDto<Object> getOverall();
 
     ResultDto<Object> getBorrow(LocalDate startTime, LocalDate endTime);
+
+	Map<String, Object> getExcel();
 }

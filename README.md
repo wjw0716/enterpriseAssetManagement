@@ -39,18 +39,7 @@
 - 后台运行方式，linux 使用`nohup`，windows 使用`javaw`代替`java`
 - 若要支持ie，需修改所有js中es6语法为es5，理论上支持ie9+
 
-### docker 运行
 
-- docker命令行输入以下代码
-```
-docker  run -p 80:8080 \
-   -e 'SPRING_DATASOURCE_URL=jdbc:mysql://192.169.2.2:3306/asset?useUnicode=true&characterEncoding=utf-8&useSSL=false' \
-   -e 'SPRING_DATASOURCE_USERNAME=root' \
-   -e 'SPRING_DATASOURCE_PASSWORD=pw' \
-   -e 'SPRING_DATASOURCE_INITIALIZATION_MODE=always' \
-   kurome/asset-run  
-```  
-- 在网页端，输入docker虚拟环境ip地址即可  
 
 ### 不再维护！！
 很遗憾告诉您这个消息，该项目部分功能实现超出我的能力范围（如果要做到好用，

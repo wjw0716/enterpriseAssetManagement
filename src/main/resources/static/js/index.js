@@ -20,6 +20,7 @@ const App = new Vue({
     },
     created:function () {
         let self = this;
+       // console.log(this.user.pointId);
         if (this.user.pointId) {
             this.selectedPoint.push(this.user.pointId);
             Map.selectedPoint.push(this.user.pointId);
@@ -27,7 +28,7 @@ const App = new Vue({
         }
     },
     mounted:function () {
-        //this.updateSidebarTree();
+        this.updateSidebarTree();
     },
     methods:{
         logout:function () {
@@ -50,22 +51,7 @@ const App = new Vue({
                         item.state.selected = true;
                     }
                 });
-                self.changeListTreeForJsTree(temps);
-
-                $('#sidebar-point-tree').jstree({
-                    'core' : {
-                        'data' : temps
-                    },
-                    "checkbox" : {
-                        "keep_selected_style" : false,
-                        "three_state":false
-                    },
-                    "plugins": ["checkbox"]
-                }).on('changed.jstree', function (e, data) {
-                    self.selectedPoint = data.selected;
-                    Map.selectedPoint = data.selected;
-                });
-
+               
             });
         },
         changeListTreeToList:function (array) {

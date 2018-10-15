@@ -20,9 +20,12 @@ public class Asset extends BaseEntity {
     private Integer assetsTypeId;
     private String assetsTypeName;
     private Long pointId;
-    //购入时间
+    //出厂时间
     private Date buyTime;
-
+    //基础参数
+    private String summary;
+    
+    
     public String getUuid() {
         return uuid;
     }
@@ -102,6 +105,14 @@ public class Asset extends BaseEntity {
 
 	public void setBuyTime(Date buyTime) {
 		this.buyTime = buyTime;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 
 	

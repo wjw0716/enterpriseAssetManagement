@@ -66,31 +66,32 @@ public interface TreeService<T extends TreeEntity<T>> {
     }
 
     default Map<Long,T> getTreeMap(){
-        if (isNotEmpty(getTreeMapResource()))
-            return getTreeMapResource();
-        List<T> treeList = getTreeList();
-        Map<Long,T> temp = treeList.stream().collect(Collectors.toMap(TreeEntity::getId, y->y));
-        T root = getRootResource();
-        root.setPid(-100L);
-        root.setNodes(new ArrayList<>());
-        root.setId(-100L);
-        temp.put(0L,root);
-        treeList.forEach(tree -> {
-            if (Objects.equals(tree.getPid(), tree.getId()) || tree.getPid() == 0) {
-                T p = temp.get(0L);
-                p.getNodes().add(tree);
-                return;
-            }
-            T p = temp.get(tree.getPid());
-            p.getNodes().add(tree);
-        });
-        if (getTreeMapResource() != null && isNotEmpty(treeList))
-            synchronized (this){
-                if (getTreeMapResource().size() == 0){
-                    getTreeMapResource().putAll(temp);
-                }
-            }
-        return temp;
+		if (isNotEmpty(getTreeMapResource())) {
+			return getTreeMapResource();
+		}
+		List<T> treeList = getTreeList();
+		Map<Long, T> temp = treeList.stream().collect(Collectors.toMap(TreeEntity::getId, y -> y));
+		T root = getRootResource();
+		root.setPid(-100L);
+		root.setNodes(new ArrayList<>());
+		root.setId(-100L);
+		temp.put(0L, root);
+		treeList.forEach(tree -> {
+			if (Objects.equals(tree.getPid(), tree.getId()) || tree.getPid() == 0) {
+				T p = temp.get(0L);
+				p.getNodes().add(tree);
+				return;
+			}
+			T p = temp.get(tree.getPid());
+			p.getNodes().add(tree);
+		});
+		if (getTreeMapResource() != null && isNotEmpty(treeList))
+			synchronized (this) {
+				if (getTreeMapResource().size() == 0) {
+					getTreeMapResource().putAll(temp);
+				}
+			}
+		return temp;
     }
 
     default List<T> getTreeRoot(){

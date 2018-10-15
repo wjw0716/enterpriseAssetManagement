@@ -9,7 +9,7 @@ const loginApp = new Vue({
         login:function () {
             let now=new Date();
             let time = parseInt(now.getTime()/1000);
-            let MD5Password = hex_md5(this.password+time);
+            let MD5Password = hex_md5(hex_md5(this.password)+time);
             new WebBuilder("/public/login")
                 .addIntercept(defaultIntercept)
                 .body({

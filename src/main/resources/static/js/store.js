@@ -7,8 +7,10 @@ const Map = new Vue({
     computed:{
         point:function () {
             let self = this;
+           // console.log(self.selectedPoint);
             return $.map(self.selectedPoint,function (id) {
                 for (let i in self.sessionPoint){
+                  
                     if (self.sessionPoint[i].id === parseInt(id))
                         return {
                             "key":self.sessionPoint[i].id,

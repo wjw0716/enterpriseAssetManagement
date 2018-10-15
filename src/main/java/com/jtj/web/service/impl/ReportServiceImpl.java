@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MrTT (jiang.taojie@foxmail.com)
@@ -40,4 +41,11 @@ public class ReportServiceImpl implements ReportService {
         result.setObject(reportDao.getBorrow(start,end.plusDays(1),dateList));
         return result;
     }
+    
+    @Override
+    public Map<String, Object> getExcel() {
+    	Map<String, Object> overall = reportDao.getOverall();
+        return overall;
+    }
+  
 }
