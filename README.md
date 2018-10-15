@@ -21,7 +21,7 @@
 #### 前端：
 - spring thymeleaf
 - vue.js(version 2.0)
-- jQuery(version 2.1)
+- jQuery(version 1.12)
 
 #### 其他：
 - swagger2  
