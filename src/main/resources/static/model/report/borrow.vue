@@ -4,33 +4,38 @@
         <header-label :data="headerLabel"></header-label>
         <!-- 动画 -->
         <div class="wrapper wrapper-content animated fadeInRight">
-
             <!-- 表单 -->
-            <div class="row"><div class="col-lg-12"><div class="ibox tt-from-table">
-                <div class="ibox-content">
-                    <form role="form" class="form-inline validation">
-
-                        <tt-simple-input id="time1" class="datepicker" label="开始时间" v-model="conditions.time1" required readonly></tt-simple-input>
-                        <tt-simple-input id="time2" class="datepicker " label="结束时间" v-model="conditions.time2" required readonly></tt-simple-input>
-
-                        <div class="btn-toolbar pull-right" role="toolbar">
-                            <div class="btn-group">
-                                <button @click="getTableList" class="btn btn-primary" type="button">搜索</button>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="ibox tt-from-table">
+                  <div class="ibox-content">
+                      <form role="form" class="form-inline validation">
+                          <tt-simple-input id="time1" class="datepicker" label="开始时间" v-model="conditions.time1" required readonly></tt-simple-input>
+                          <tt-simple-input id="time2" class="datepicker " label="结束时间" v-model="conditions.time2" required readonly></tt-simple-input>
+                          <div class="btn-toolbar pull-right" role="toolbar">
+                              <div class="btn-group">
+                                  <button @click="getTableList" class="btn btn-primary" type="button">搜索</button>
+                              </div>
+                          </div>
+                      </form>
+                      <div class="clearfix"></div>
+                  </div>
                 </div>
-            </div></div></div>
+              </div>
+            </div>
 
             <!-- 图表 -->
-            <div class="row"><div class="col-lg-12"><div class="ibox">
-                <div class="ibox-content">
-                    <div>
-                        <canvas id="lineChart" height="140"></canvas>
-                    </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="ibox">
+                  <div class="ibox-content">
+                      <div>
+                          <canvas id="lineChart" height="140"></canvas>
+                      </div>
+                  </div>
                 </div>
-            </div></div></div>
+              </div>
+            </div>
 
         </div>
     </div>

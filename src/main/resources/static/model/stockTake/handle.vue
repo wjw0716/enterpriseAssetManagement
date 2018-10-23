@@ -69,59 +69,59 @@
 </template>
 
 <script type="application/javascript">
-    //路由配置
-    RouteConfig.deploy({
-        data: function () {
-            return {
-                headerLabel: {
-                    name: "盘点",
-                    path: {
-                        parent: [
-                            {url: "/", name: "Home"},
-                            {name: "StockTake"}
-                        ],
-                        active: "Handle"
-                    }
-                },
-                data:{
-                    stockTakeId:null,
-                    uuid:null,
-                    name:null,
-                    assetsTypeId:null,
-                    pointId:"undefined",
-                    customsId:null
-                }
-            }
-        },
-        created:function () {
-        },
-        mounted:function () {
-        },
-        methods:{
-            submit:function () {
-                let self = this;
-                if ((self.data.uuid === null || self.data.uuid === "")&&
-                    (self.data.customsId === null || self.data.customsId === "")){
-                    ToastrUtils.show("uuid与资产编号不能同时为空！","",9);
-                    return;
-                }
-                if (ValidationUtils.check(".validation")) {
-                    Server.stockTake.handle.body(self.data).execute(() => {
-                        self.clear();
-                    });
-                }
-            },
-            clear:function () {
-                this.data.uuid = null;
-                this.data.customsId = null;
-            },
-            getTypeMapById:function (id) {
-                let self;
-                Server.assetType.getMapByPid.param("pid",id).setAsync(false).execute((data) => {
-                    self = data.object;
-                });
-                return self;
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "盘点",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "StockTake" }],
+          active: "Handle"
         }
-    });
+      },
+      data: {
+        stockTakeId: null,
+        uuid: null,
+        name: null,
+        assetsTypeId: null,
+        pointId: "undefined",
+        customsId: null
+      }
+    };
+  },
+  created: function() {},
+  mounted: function() {},
+  methods: {
+    submit: function() {
+      let self = this;
+      if (
+        (self.data.uuid === null || self.data.uuid === "") &&
+        (self.data.customsId === null || self.data.customsId === "")
+      ) {
+        ToastrUtils.show("uuid与资产编号不能同时为空！", "", 9);
+        return;
+      }
+      if (ValidationUtils.check(".validation")) {
+        Server.stockTake.handle.body(self.data).execute(() => {
+          self.clear();
+        });
+      }
+    },
+    clear: function() {
+      this.data.uuid = null;
+      this.data.customsId = null;
+    },
+    getTypeMapById: function(id) {
+      let self;
+      Server.assetType.getMapByPid
+        .param("pid", id)
+        .setAsync(false)
+        .execute(data => {
+          self = data.object;
+        });
+      return self;
+    }
+  }
+});
 </script>

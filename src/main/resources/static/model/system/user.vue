@@ -105,150 +105,149 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"用户管理",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"System"}
-                        ],
-                        active:"User"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        id:"用户id",
-                        name:"名称",
-                        description:"简介",
-                        roleName:"角色名称",
-                        operation:{name:"操作",width:"160px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                //pointId:"15",
-                pointModalData:{
-                    data:{
-                        
-                    },
-                    submit:function () {}
-                },
-                tree:{
-                    point:[]
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            }
-        },
-        created:function () {
-            let self = this;
-            self.getTableList();
-            Server.point.getPointTree.execute(data => {
-                self.tree.point = data.object;
-            });
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.user.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                        })
-                    }
-                };
-            },
-            deleteAll:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.user.delete.param("ids",ids).execute(() => self.getTableList());
-                });
-            },
-            showAddModal:function () {
-                this.fromModalData.title = "添加新用户";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.isCreate = true;
-                this.fromModalData.submit = this.getSubmitFunc(Server.user.add);
-                this.fromModal.show();
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改信息";
-                this.fromModalData.data = JsonUtils.copy(obj);
-                JsonUtils.clear(this.fromModalData.data,"password","role");
-                this.fromModalData.isCreate = false;
-                this.fromModalData.submit = this.getSubmitFunc(Server.user.update);
-                this.fromModal.show();
-            },
-            showPasswordModal:function (obj) {
-                //todo 接口待写
-                let self = this;
-               // alert(JSON.stringify(obj));
-                $("#password-modal").modal("show");
-                self.pointModalData.data.id=obj.id;
-                self.pointModalData.submit = function () {
-                    if (ValidationUtils.check(".validation")){
-                        Server.user.updatePwd.body(self.pointModalData.data).execute(() => {
-                            $("#password-modal").modal("hide");
-                        })
-                    }
-                   
-                };
-               
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "用户管理",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "System" }],
+          active: "User"
         }
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          id: "用户id",
+          name: "名称",
+          description: "简介",
+          roleName: "角色名称",
+          operation: { name: "操作", width: "160px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      //pointId:"15",
+      pointModalData: {
+        data: {},
+        submit: function() {}
+      },
+      tree: {
+        point: []
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    }
+  },
+  created: function() {
+    let self = this;
+    self.getTableList();
+    Server.point.getPointTree.execute(data => {
+      self.tree.point = data.object;
     });
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.user.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          console.log(func);
+          if(func==Server.user.add){
+            self.fromModalData.data.password=hex_md5(self.fromModalData.data.password);
+          }
 
+
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteAll: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        let ids = $.map(self.tableSelectData, item => item.id);
+        Server.user.delete.param("ids", ids).execute(() => self.getTableList());
+      });
+    },
+    showAddModal: function() {
+      this.fromModalData.title = "添加新用户";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.isCreate = true;
+      this.fromModalData.submit = this.getSubmitFunc(Server.user.add);
+      this.fromModal.show();
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改信息";
+      this.fromModalData.data = JsonUtils.copy(obj);
+      JsonUtils.clear(this.fromModalData.data, "password", "role");
+      this.fromModalData.isCreate = false;
+      this.fromModalData.submit = this.getSubmitFunc(Server.user.update);
+      this.fromModal.show();
+    },
+    showPasswordModal: function(obj) {
+      let self = this;
+      // alert(JSON.stringify(obj));
+      $("#password-modal").modal("show");
+      self.pointModalData.data.id = obj.id;
+    
+      self.pointModalData.submit = function() {
+        self.pointModalData.data.password=hex_md5(self.pointModalData.data.password);
+        if (ValidationUtils.check(".validation")) {
+          Server.user.updatePwd.body(self.pointModalData.data).execute(() => {
+            $("#password-modal").modal("hide");
+              self.pointModalData.data.id=null;
+              self.pointModalData.data.password=null;
+          });
+        }
+      };
+    }
+  }
+});
 </script>

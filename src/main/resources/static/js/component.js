@@ -142,7 +142,7 @@ Vue.component('tt-table', {
         //复选框美化
         '<th v-if="selection">' +
         '<div class="checkbox checkbox-table tt-table-checkbox">' +
-        '<input v-model="allSelected" @click="updateAllSelect" type="checkbox" disabled="selectOne?false:true">' +
+        '<input v-model="allSelected" @click="updateAllSelect" type="checkbox" :disabled="selectOne">' +
         '<label></label>' +
         '</div>' +
         '</th>' +
@@ -272,7 +272,7 @@ Vue.component('tt-pagination', {
         for (let i = 0; i < self.innerButtonCount; i++) {
             numberButton.push(createElement("button", {
                 class: ["btn", i + self.offset === self.innerIndex ? "btn-primary" : "btn-white"],
-                attrs: { type: "button", disabled: i + self.offset === self.innerIndex },
+                attrs: { type: "button", disabled: i + self.offset === self.innerIndex,style:"margin:0px" },
                 on: { click: self.getUpdateIndexFunc(i + self.offset) }
             }, i + self.offset))
         }
@@ -296,7 +296,7 @@ Vue.component('tt-pagination', {
         let inputButton = [];
         inputButton.push(createElement("input", {
             class: ["form-control"],
-            style: { width: "40px" }, attrs: { type: "text" },
+            style: { width: "40px",margin:"0px" }, attrs: { type: "text" },
             domProps: {
                 value: self.inputIndex
             },
@@ -311,11 +311,11 @@ Vue.component('tt-pagination', {
                 }
             }
         }));
-        inputButton.push(createElement("span", { class: ["input-group-addon"] }, "/" + self.maxPageSize));
+        inputButton.push(createElement("span", { class: ["input-group-addon"],attrs: {style:"margin:0px" }, }, "/" + self.maxPageSize));
         inputButton.push(createElement("span", { class: ["input-group-btn"] }, [
             createElement("button", {
                 class: ["btn", "btn-primary"],
-                attrs: { type: "button" },
+                attrs: { type: "button",style:"margin:0px" },
                 on: { click: self.goToInputIndex }
             }, "跳转")
         ]));

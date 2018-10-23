@@ -102,160 +102,155 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"角色管理",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"System"}
-                        ],
-                        active:"Role"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        id:"角色id",
-                        name:"名称",
-                        status:"状态",
-                        operation:{name:"操作",width:"130px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                permissionModalData:{
-                    data:{},
-                    items:[],
-                    submit:function () {}
-                },
-                pointModalData:{
-                    data:{},
-                    submit:function () {}
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            },
-            permissionModal:function () {
-                return new ModalBuilder("#permission-modal");
-            },
-            dualSelect:function () {
-                return $('.dual_select').bootstrapDualListbox({
-                    selectorMinimalHeight: 200
-                });
-            }
-        },
-        created:function () {
-            this.getTableList();
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.role.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-               
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                        })
-                    }
-                };
-            },
-            deleteAll:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.role.delete.param("ids",ids).execute(() => self.getTableList());
-                });
-            },
-            showAddModal:function () {
-                this.fromModalData.title = "添加新角色";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.submit = this.getSubmitFunc(Server.role.add);
-                this.fromModal.show();
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改信息";
-                this.fromModalData.data = JsonUtils.copy(obj);
-                this.fromModalData.submit = this.getSubmitFunc(Server.role.update);
-                this.fromModal.show();
-            },
-            showPermissionModal:function (obj) {
-                let self = this;
-                //self.updatePermissionTree();
-                Server.role.getPermission.param({roleId:obj.id}).execute(data => {
-                    let temp = data.object.all;
-                    $.each(temp,function (index,item) {
-                        $.each(data.object.role,function (ri,rt) {
-                            if (item.code === rt) item.isSelected = true;
-                        });
-                        if (!item.isSelected) item.isSelected = false;
-                    });
-                    self.permissionModalData.items = temp;
-                    Vue.nextTick(function () {
-                        self.dualSelect.bootstrapDualListbox('refresh');
-                    });
-                });
-                self.permissionModalData.data = {id:obj.id};
-                self.permissionModalData.submit = function () {
-                    Server.role.updatePermission.body({
-                        roleId:obj.id,
-                        permissionIds:(self.dualSelect.val()||"").toString()
-                    }).execute(() => self.permissionModal.hide())
-                };
-                self.permissionModal.show();
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "角色管理",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "System" }],
+          active: "Role"
         }
-    });
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          id: "角色id",
+          name: "名称",
+          status: "状态",
+          operation: { name: "操作", width: "130px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      permissionModalData: {
+        data: {},
+        items: [],
+        submit: function() {}
+      },
+      pointModalData: {
+        data: {},
+        submit: function() {}
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    },
+    permissionModal: function() {
+      return new ModalBuilder("#permission-modal");
+    },
+    dualSelect: function() {
+      return $(".dual_select").bootstrapDualListbox({
+        selectorMinimalHeight: 200
+      });
+    }
+  },
+  created: function() {
+    this.getTableList();
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.role.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
 
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteAll: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        let ids = $.map(self.tableSelectData, item => item.id);
+        Server.role.delete.param("ids", ids).execute(() => self.getTableList());
+      });
+    },
+    showAddModal: function() {
+      this.fromModalData.title = "添加新角色";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.submit = this.getSubmitFunc(Server.role.add);
+      this.fromModal.show();
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改信息";
+      this.fromModalData.data = JsonUtils.copy(obj);
+      this.fromModalData.submit = this.getSubmitFunc(Server.role.update);
+      this.fromModal.show();
+    },
+    showPermissionModal: function(obj) {
+      let self = this;
+      //self.updatePermissionTree();
+      Server.role.getPermission.param({ roleId: obj.id }).execute(data => {
+        let temp = data.object.all;
+        $.each(temp, function(index, item) {
+          $.each(data.object.role, function(ri, rt) {
+            if (item.code === rt) item.isSelected = true;
+          });
+          if (!item.isSelected) item.isSelected = false;
+        });
+        self.permissionModalData.items = temp;
+        Vue.nextTick(function() {
+          self.dualSelect.bootstrapDualListbox("refresh");
+        });
+      });
+      self.permissionModalData.data = { id: obj.id };
+      self.permissionModalData.submit = function() {
+        Server.role.updatePermission
+          .body({
+            roleId: obj.id,
+            permissionIds: (self.dualSelect.val() || "").toString()
+          })
+          .execute(() => self.permissionModal.hide());
+      };
+      self.permissionModal.show();
+    }
+  }
+});
 </script>

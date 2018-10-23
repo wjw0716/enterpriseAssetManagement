@@ -5,8 +5,8 @@
 <mapper namespace="com.jtj.web.dao.AssetDao">
 
     <insert id="add">
-        INSERT INTO assets_item(uuid, customs_id, name, price, assets_type_id, point_id,buy_time)
-        VALUES (#{uuid},#{customsId},#{name},#{price},#{assetsTypeId},#{pointId},#{buyTime})
+        INSERT INTO assets_item(uuid, customs_id, name, price, assets_type_id, point_id,buy_time,summary)
+        VALUES (#{uuid},#{customsId},#{name},#{price},#{assetsTypeId},#{pointId},#{buyTime},#{summary})
     </insert>
 
     <update id="update">

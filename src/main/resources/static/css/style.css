@@ -657,6 +657,7 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
   background-color: #1ab394;
   border-color: #1ab394;
   color: #FFFFFF;
+  margin: 5px;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -1897,6 +1898,7 @@ div.dt-button-info {
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
   width: 100%;
   font-size: 14px;
+  margin: 5px;
 }
 .form-control:focus,
 .single-line:focus {
@@ -1930,6 +1932,7 @@ div.dt-button-info {
   line-height: 1;
   padding: 6px 12px;
   text-align: center;
+  margin: 5px;
 }
 .spinner-buttons.input-group-btn .btn-xs {
   line-height: 1.13;
@@ -1937,6 +1940,10 @@ div.dt-button-info {
 .spinner-buttons.input-group-btn {
   width: 20%;
 }
+.input-group-btn{
+	margin: 5px;
+}
+
 .noUi-connect {
   background: none repeat scroll 0 0 #1ab394;
   box-shadow: none;

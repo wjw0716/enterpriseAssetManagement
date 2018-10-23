@@ -44,10 +44,18 @@
                         <div class="hr-line-dashed"></div>
                          <div class="form-group">
                             <label class="col-sm-2 control-label">购入时间</label>
-                            <div class="col-sm-10">                               
-                                <input name="buyTime" v-model="data.buyTime" type="text" class="form-control datepicker" required  readonly>
+                            <div class="col-sm-10">         
+                                <input name="buyTime" type="text" class="form-control datepicker" required  readonly>
                             </div>
                         </div>
+                        <div class="hr-line-dashed"></div>
+                         <div class="form-group">
+                            <label class="col-sm-2 control-label">基础参数</label>
+                            <div class="col-sm-10">                               
+                                <textarea name="summary" v-model="data.summary"  class="form-control" rows="8" required></textarea>
+                            </div>
+                        </div>
+                        
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-2">
@@ -81,7 +89,8 @@ RouteConfig.deploy({
         assetsTypeId: null,
         pointId: "undefined",
         customsId: null,
-        buyTime: null
+        buyTime: null,
+        summary: null
       }
     };
   },
@@ -101,7 +110,7 @@ RouteConfig.deploy({
     add: function() {
       let self = this;
       if (ValidationUtils.check(".validation")) {
-       self.data.buyTime = $('input[name=buyTime]').val();
+        self.data.buyTime = $("input[name=buyTime]").val();
         Server.asset.add.body(self.data).execute(() => {
           self.clear();
         });

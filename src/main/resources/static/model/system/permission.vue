@@ -76,126 +76,124 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"权限管理",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"System"}
-                        ],
-                        active:"Permission"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        id:"权限id",
-                        code:"code",
-                        name:"名称",
-                        operation:{name:"操作",width:"60px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                quick:false
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            }
-        },
-        created:function () {
-            this.getTableList();
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.permission.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                        })
-                    }
-                };
-            },
-            deleteAll:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.permission.delete.param("ids",ids).execute(() => self.getTableList());
-                });
-            },
-            showAddModal:function () {
-                this.fromModalData.title = "添加";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.submit = this.getSubmitFunc(Server.permission.add);
-                this.quick = false;
-                this.fromModal.show();
-            },
-            showAddMiniModal:function () {
-                this.fromModalData.title = "添加";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.submit = this.getSubmitFunc(Server.permission.addQuick);
-                this.quick = true;
-                this.fromModal.show();
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改";
-                this.fromModalData.data = JsonUtils.copy(obj);
-                this.fromModalData.submit = this.getSubmitFunc(Server.permission.update);
-                this.quick = false;
-                this.fromModal.show();
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "权限管理",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "System" }],
+          active: "Permission"
         }
-    });
-
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          id: "权限id",
+          code: "code",
+          name: "名称",
+          operation: { name: "操作", width: "60px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      quick: false
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    }
+  },
+  created: function() {
+    this.getTableList();
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.permission.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteAll: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        let ids = $.map(self.tableSelectData, item => item.id);
+        Server.permission.delete
+          .param("ids", ids)
+          .execute(() => self.getTableList());
+      });
+    },
+    showAddModal: function() {
+      this.fromModalData.title = "添加";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.submit = this.getSubmitFunc(Server.permission.add);
+      this.quick = false;
+      this.fromModal.show();
+    },
+    showAddMiniModal: function() {
+      this.fromModalData.title = "添加";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.submit = this.getSubmitFunc(
+        Server.permission.addQuick
+      );
+      this.quick = true;
+      this.fromModal.show();
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改";
+      this.fromModalData.data = JsonUtils.copy(obj);
+      this.fromModalData.submit = this.getSubmitFunc(Server.permission.update);
+      this.quick = false;
+      this.fromModal.show();
+    }
+  }
+});
 </script>

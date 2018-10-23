@@ -114,7 +114,7 @@ RouteConfig.deploy({
     });
     $(".select2-ajax")
       .select2({
-       language:'zh-CN',
+        language: "zh-CN",
         ajax: {
           url: Web.buildUrl("/borrow/users"),
           data: function(params) {
@@ -185,7 +185,7 @@ RouteConfig.deploy({
           uuid: null,
           name: null,
           assetsTypeId: null,
-          pointId: "undefined",
+          pointId: null,
           customsId: null
         }
       };

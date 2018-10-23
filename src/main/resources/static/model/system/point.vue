@@ -83,161 +83,154 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"部门管理",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"System"}
-                        ],
-                        active:"Point"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        id:"部门id",
-                        name:"名称",
-                        pid:"父id",
-                        order:"排序",
-                        operation:{name:"操作",width:"60px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                tree:{
-                    point:[]
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            }
-        },
-        created:function () {
-            let self = this;
-            this.getTableList();
-            //初始化模态框相关数据
-             Server.point.getPointTree.execute(data => {
-                    let treeData = data.object;
-                    self.tree.point = data.object;
-                      App.changeListTreeForJsTree(treeData);
-                    $('#menu-tree').jstree({
-                        'core' : {
-                            'data' :treeData
-                        }
-                    }).on('changed.jstree', function (e, data) {
-                        
-                        if(typeof(data.node)=="undefined"){
-
-                        }else{
-                            self.conditions.pid = self.conditions.pid === data.node.id ? null : data.node.id;
-                            //  self.pname = data.node.text;   
-                        }
-                        self.getTableList();
-
-                        
-                    });
-                   
-                });
-          
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-            //this.updateTree();
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.point.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                            self.updateTree();
-                        })
-                    }
-                };
-            },
-            deleteOne:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    Server.point.deleteById.path("id",self.tableSelectData[0].id).execute(() => {
-                        self.getTableList();
-                         self.updateTree();
-                    });
-                });
-            },
-            showAddModal:function () {
-                this.fromModalData.title = "添加";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.data.pid = this.conditions.pid;
-                this.fromModalData.submit = this.getSubmitFunc(Server.point.add);
-                this.fromModal.show();
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改";
-                this.fromModalData.data = JsonUtils.copy(obj);
-                this.fromModalData.submit = this.getSubmitFunc(Server.point.update);
-                this.fromModal.show();
-            },
-            updateTree:function () {
-                let self = this;
-                Server.point.getPointTree.execute(data => {
-                    let treeData = data.object;
-                    let tree= $('#menu-tree')
-                    self.tree.point = data.object;
-                    App.changeListTreeForJsTree(treeData);
-                    tree.jstree(true).settings.core.data = treeData;
-                    tree.jstree(true).refresh();
-                  
-                });
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "部门管理",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "System" }],
+          active: "Point"
         }
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          id: "部门id",
+          name: "名称",
+          pid: "父id",
+          order: "排序",
+          operation: { name: "操作", width: "60px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      tree: {
+        point: []
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    }
+  },
+  created: function() {
+    let self = this;
+    this.getTableList();
+    //初始化模态框相关数据
+    Server.point.getPointTree.execute(data => {
+      let treeData = data.object;
+      self.tree.point = data.object;
+      App.changeListTreeForJsTree(treeData);
+      $("#menu-tree")
+        .jstree({
+          core: {
+            data: treeData
+          }
+        })
+        .on("changed.jstree", function(e, data) {
+          if (typeof data.node == "undefined") {
+          } else {
+            self.conditions.pid =
+              self.conditions.pid === data.node.id ? null : data.node.id;
+            //  self.pname = data.node.text;
+          }
+          self.getTableList();
+        });
     });
-
+  },
+  beforeMount: function() {},
+  mounted: function() {
+    //this.updateTree();
+  },
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.point.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+            self.updateTree();
+          });
+        }
+      };
+    },
+    deleteOne: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        Server.point.deleteById
+          .path("id", self.tableSelectData[0].id)
+          .execute(() => {
+            self.getTableList();
+            self.updateTree();
+          });
+      });
+    },
+    showAddModal: function() {
+      this.fromModalData.title = "添加";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.data.pid = this.conditions.pid;
+      this.fromModalData.submit = this.getSubmitFunc(Server.point.add);
+      this.fromModal.show();
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改";
+      this.fromModalData.data = JsonUtils.copy(obj);
+      this.fromModalData.submit = this.getSubmitFunc(Server.point.update);
+      this.fromModal.show();
+    },
+    updateTree: function() {
+      let self = this;
+      Server.point.getPointTree.execute(data => {
+        let treeData = data.object;
+        let tree = $("#menu-tree");
+        self.tree.point = data.object;
+        App.changeListTreeForJsTree(treeData);
+        tree.jstree(true).settings.core.data = treeData;
+        tree.jstree(true).refresh();
+      });
+    }
+  }
+});
 </script>

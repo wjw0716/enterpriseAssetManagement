@@ -36,7 +36,7 @@
             <div class="row"><div class="col-lg-12"><div class="ibox">
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        <tt-table v-bind:data="tableData" :selection = "true" v-model="tableSelectData">
+                        <tt-table v-bind:data="tableData" :selection = "true"  v-model="tableSelectData">
                             <template slot="tt-body-operation" scope="props">
                                 <button @click="showQRCodeModal(props.row)" class="btn btn-table btn-primary btn-rounded" type="button">二维码</button>
                                 <button @click="showOperationRecordModal(props.row)" v-shiro:permission="'asset:record:getByUuid'" class="btn btn-table btn-primary btn-rounded" type="button">操作记录</button>
@@ -104,7 +104,11 @@
                     <div id="qrcodeCanvas" class="col-sm-12 img-responsive" style="padding:6px"></div>
                 </div>
                 <!-- 打印二维码 -->
-                <img id="qrcodeImage"  />
+                <div id="qrdiv" style="text-align:center;">
+                	<img id="qrcodeImage" />
+                	<span id="qrcodeTitle"></span>
+                </div>
+               
                
                  <div class="row">
                     <button @click="printQr" class="btn btn-sm btn-primary pull-right m-t-n-xs" type="button"><strong>打印</strong></button>
@@ -121,183 +125,184 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"资产列表",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"Asset"}
-                        ],
-                        active:"Get"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        uuid:"uuid",
-                        customsId:"资产编号",
-                        name:"名称",
-                        price:"价格",
-                        statusName:"状态",
-                        operation:{name:"操作",width:"140px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                operationRecordData:{
-                    title:{
-                        $index:"序号",
-                        userId:"操作人id",
-                        operationTypeName:"操作类型",
-                        remark:"备注"
-                    },
-                    data:[]
-                },
-                stockTakeData:{
-                    conditions:null,
-                    name:null
-                },
-                tree:{
-                    assetType:[]
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            },
-            operationRecordModal:function () {
-                return new ModalBuilder("#operation-record-modal");
-            },
-            stockTakeModal:function () {
-                return new ModalBuilder("#stock-take-modal");
-            },
-            QRCodeModal:function () {
-                return new ModalBuilder("#QRCode-modal");
-            }
-        },
-        created:function () {
-            this.getTableList();
-            let self = this;
-            Server.assetType.getTypeTree.execute(data => {
-                self.tree.assetType = data.object;
-            });
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            printQr:function(){
-            var img = document.getElementById("qrcodeImage"); // get image element
-            var canvas  = document.getElementsByTagName("canvas")[0];  // get canvas element
-            img.src = canvas.toDataURL();                     // update image
- 
-           $("#qrcodeImage").jqprint({
-				 debug: true, 
-				 importCSS: true, 
-				 printContainer: true, 
-				 operaSupport: false
-			 });
-               
-            },
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.asset.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                        })
-                    }
-                };
-            },
-            deleteAll:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.asset.delete.param("ids",ids).execute(() => self.getTableList());
-                });
-            },
-            showUpdateModal:function (status,obj) {
-                this.fromModalData.title = status === 3?"维修":"报废";
-                obj.remark = null;
-                obj.status = obj.status===status?1:status;
-                this.fromModalData.data = JsonUtils.copy(obj);
-                this.fromModalData.submit = this.getSubmitFunc(Server.asset.updateStatus);
-                this.fromModal.show();
-            },
-            showOperationRecordModal:function (obj) {
-                let self =this;
-                Server.asset.getOperationRecordByUuid.param("uuid",obj.uuid).execute((data) =>{
-                    self.operationRecordData.data = data.object;
-                });
-                self.operationRecordModal.show();
-            },
-            openStockTake:function () {
-                let self = this;
-                SweetAlertUtils.show("提醒","该操作将当前条件下的资产条目加入到待盘点中，是否继续").sure(function () {
-                    self.stockTakeData.conditions = JsonUtils.copy(self.conditions);
-                    self.stockTakeModal.show();
-                });
-            },
-            addStockTake:function () {
-                let self = this;
-                if (ValidationUtils.check(".validation")){
-                    Server.asset.addStockTake.body(self.stockTakeData).execute(()=>{
-                        self.stockTakeModal.hide();
-                    })
-                }
-            },
-            showQRCodeModal:function (obj) {
-                $('#qrcodeCanvas').html("");
-                $('#qrcodeCanvas').qrcode(obj.uuid);
-                this.QRCodeModal.show();
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "资产列表",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "Asset" }],
+          active: "Get"
         }
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          uuid: "uuid",
+          customsId: "资产编号",
+          name: "名称",
+          price: "价格",
+          statusName: "状态",
+          operation: { name: "操作", width: "140px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      operationRecordData: {
+        title: {
+          $index: "序号",
+          userId: "操作人id",
+          operationTypeName: "操作类型",
+          remark: "备注"
+        },
+        data: []
+      },
+      stockTakeData: {
+        conditions: null,
+        name: null
+      },
+      tree: {
+        assetType: []
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    },
+    operationRecordModal: function() {
+      return new ModalBuilder("#operation-record-modal");
+    },
+    stockTakeModal: function() {
+      return new ModalBuilder("#stock-take-modal");
+    },
+    QRCodeModal: function() {
+      return new ModalBuilder("#QRCode-modal");
+    }
+  },
+  created: function() {
+    this.getTableList();
+    let self = this;
+    Server.assetType.getTypeTree.execute(data => {
+      self.tree.assetType = data.object;
     });
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    printQr: function() {
+      var img = document.getElementById("qrcodeImage"); // get image element
+      var canvas = document.getElementsByTagName("canvas")[0]; // get canvas element
+      img.src = canvas.toDataURL(); // update image
 
+      $("#qrdiv").jqprint({
+        debug: false,
+        importCSS: true,
+        printContainer: false,
+        operaSupport: false
+      });
+    },
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.asset.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteAll: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        let ids = $.map(self.tableSelectData, item => item.id);
+        Server.asset.delete
+          .param("ids", ids)
+          .execute(() => self.getTableList());
+      });
+    },
+    showUpdateModal: function(status, obj) {
+      this.fromModalData.title = status === 3 ? "维修" : "报废";
+      obj.remark = null;
+      obj.status = obj.status === status ? 1 : status;
+      this.fromModalData.data = JsonUtils.copy(obj);
+      this.fromModalData.submit = this.getSubmitFunc(Server.asset.updateStatus);
+      this.fromModal.show();
+    },
+    showOperationRecordModal: function(obj) {
+      let self = this;
+      Server.asset.getOperationRecordByUuid
+        .param("uuid", obj.uuid)
+        .execute(data => {
+          self.operationRecordData.data = data.object;
+        });
+      self.operationRecordModal.show();
+    },
+    openStockTake: function() {
+      let self = this;
+      SweetAlertUtils.show(
+        "提醒",
+        "该操作将当前条件下的资产条目加入到待盘点中，是否继续"
+      ).sure(function() {
+        self.stockTakeData.conditions = JsonUtils.copy(self.conditions);
+        self.stockTakeModal.show();
+      });
+    },
+    addStockTake: function() {
+      let self = this;
+      if (ValidationUtils.check(".validation")) {
+        Server.asset.addStockTake.body(self.stockTakeData).execute(() => {
+          self.stockTakeModal.hide();
+        });
+      }
+    },
+    showQRCodeModal: function(obj) {
+      $("#qrcodeCanvas").html("");
+      $("#qrcodeCanvas").qrcode(obj.uuid);
+      $("#qrcodeTitle").text("资产名称："+obj.name);
+      this.QRCodeModal.show();
+    }
+  }
+});
 </script>

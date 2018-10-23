@@ -74,129 +74,128 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"盘点任务",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"StockTake"}
-                        ],
-                        active:"Task"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        id:"任务id",
-                        name:"名称",
-                        allAmount:"总数",
-                        handlingAmount:"待处理数",
-                        normalAmount:"正常数",
-                        abnormalAmount:"异常数",
-                        operation:{name:"操作",width:"140px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            }
-        },
-        created:function () {
-            this.getTableList();
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.stockTake.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                        })
-                    }
-                };
-            },
-            deleteAll:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    let ids = $.map(self.tableSelectData,item => item.id);
-                    Server.stockTake.delete.param("ids",ids).execute(() => self.getTableList());
-                });
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改";
-                this.fromModalData.data ={name:obj.name,id:obj.id};
-                this.fromModalData.submit = this.getSubmitFunc(Server.stockTake.update);
-                this.fromModal.show();
-            },
-            updateAmount:function (obj) {
-                Server.stockTake.updateAmount.body({id:obj.id}).execute((data) => {
-                    $.extend(true,obj,data.object);
-                })
-            },
-            routerPushToItem:function (obj) {
-                App.$router.push({ path: '/stockTake/item', query: { stockTakeId: obj.id }})
-            },
-            close:function (obj) {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    Server.stockTake.close.body({id:obj.id}).execute((data) => {
-                        $.extend(true, obj, data.object);
-                    })
-                });
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "盘点任务",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "StockTake" }],
+          active: "Task"
         }
-    });
-
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          id: "任务id",
+          name: "名称",
+          allAmount: "总数",
+          handlingAmount: "待处理数",
+          normalAmount: "正常数",
+          abnormalAmount: "异常数",
+          operation: { name: "操作", width: "140px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    }
+  },
+  created: function() {
+    this.getTableList();
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.stockTake.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteAll: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        let ids = $.map(self.tableSelectData, item => item.id);
+        Server.stockTake.delete
+          .param("ids", ids)
+          .execute(() => self.getTableList());
+      });
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改";
+      this.fromModalData.data = { name: obj.name, id: obj.id };
+      this.fromModalData.submit = this.getSubmitFunc(Server.stockTake.update);
+      this.fromModal.show();
+    },
+    updateAmount: function(obj) {
+      Server.stockTake.updateAmount.body({ id: obj.id }).execute(data => {
+        $.extend(true, obj, data.object);
+      });
+    },
+    routerPushToItem: function(obj) {
+      App.$router.push({
+        path: "/stockTake/item",
+        query: { stockTakeId: obj.id }
+      });
+    },
+    close: function(obj) {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        Server.stockTake.close.body({ id: obj.id }).execute(data => {
+          $.extend(true, obj, data.object);
+        });
+      });
+    }
+  }
+});
 </script>

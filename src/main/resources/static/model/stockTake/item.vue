@@ -55,124 +55,120 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"盘点明细",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"StockTake"}
-                        ],
-                        active:"Item"
-                    }
-                },
-                conditions:{
-                    stockTakeId:null,
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                        $index:"序号",
-                        uuid:"uuid",
-                        customsId:"资产编号",
-                        name:"名称",
-                        price:"价格",
-                        statusName:"状态",
-                        operation:{name:"操作",width:"60px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                operationRecordData:{
-                    title:{
-                        $index:"序号",
-                        userId:"操作人id",
-                        operationTypeName:"操作类型",
-                        remark:"备注"
-                    },
-                    data:[]
-                },
-                stockTakeData:{
-                    conditions:null,
-                    name:null
-                },
-                tree:{
-                    assetType:[]
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            },
-            operationRecordModal:function () {
-                return new ModalBuilder("#operation-record-modal");
-            },
-            stockTakeModal:function () {
-                return new ModalBuilder("#stock-take-modal");
-            }
-        },
-        created:function () {
-            this.conditions.stockTakeId = App.$route.query.stockTakeId;
-            if (this.conditions.stockTakeId) this.getTableList();
-            let self = this;
-            Server.assetType.getTypeTree.execute(data => {
-                self.tree.assetType = data.object;
-            });
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                if (ValidationUtils.check(".validation")) {
-                    Server.stockTake.getItemList.param(self.conditions).execute(data => {
-                        self.tableData.data = data.object.list;
-                        self.pagination.count = data.object.count;
-                        self.initFromEmpty();
-                    });
-                }
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            updateToAbnormal:function (obj) {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    Server.stockTake.updateToAbnormal.body({id:obj.id}).execute(() => self.getTableList());
-                });
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "盘点明细",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "StockTake" }],
+          active: "Item"
         }
+      },
+      conditions: {
+        stockTakeId: null,
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          $index: "序号",
+          uuid: "uuid",
+          customsId: "资产编号",
+          name: "名称",
+          price: "价格",
+          statusName: "状态",
+          operation: { name: "操作", width: "60px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      operationRecordData: {
+        title: {
+          $index: "序号",
+          userId: "操作人id",
+          operationTypeName: "操作类型",
+          remark: "备注"
+        },
+        data: []
+      },
+      stockTakeData: {
+        conditions: null,
+        name: null
+      },
+      tree: {
+        assetType: []
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    },
+    operationRecordModal: function() {
+      return new ModalBuilder("#operation-record-modal");
+    },
+    stockTakeModal: function() {
+      return new ModalBuilder("#stock-take-modal");
+    }
+  },
+  created: function() {
+    this.conditions.stockTakeId = App.$route.query.stockTakeId;
+    if (this.conditions.stockTakeId) this.getTableList();
+    let self = this;
+    Server.assetType.getTypeTree.execute(data => {
+      self.tree.assetType = data.object;
     });
-
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      if (ValidationUtils.check(".validation")) {
+        Server.stockTake.getItemList.param(self.conditions).execute(data => {
+          self.tableData.data = data.object.list;
+          self.pagination.count = data.object.count;
+          self.initFromEmpty();
+        });
+      }
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    updateToAbnormal: function(obj) {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        Server.stockTake.updateToAbnormal
+          .body({ id: obj.id })
+          .execute(() => self.getTableList());
+      });
+    }
+  }
+});
 </script>

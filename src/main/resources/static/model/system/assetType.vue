@@ -4,11 +4,8 @@
         <header-label :data="headerLabel"></header-label>
         <!-- 动画 -->
         <div class="wrapper wrapper-content animated fadeInRight"><!-- animated -->
-
             <div class="row">
-               
                 <div class="col-lg-12">
-
                     <!-- 表单 -->
                     <div class="row"><div class="col-lg-12"><div class="ibox tt-from-table">
                         <div class="ibox-content">
@@ -80,125 +77,117 @@
 </template>
 
 <script type="application/javascript">
-
-    //路由配置
-    RouteConfig.deploy({
-        data:function () {
-            return {
-                headerLabel:{
-                    name:"资产类型管理",
-                    path:{
-                        parent:[
-                            {url:"/",name:"Home"},
-                            {name:"System"}
-                        ],
-                        active:"AssetType"
-                    }
-                },
-                conditions:{
-                    begin:0,
-                    offset:10
-                },
-                tableData:{
-                    title:{
-                      //  id:"类型id",
-                        name:"名称",
-                        order:"排序",
-                        operation:{name:"操作",width:"60px"}
-                    },
-                    data:[]
-                },
-                tableSelectData:[],
-                pagination:{},
-                fromModalData:{
-                    title:"",
-                    data:{},
-                    empty:null,
-                    submit:function () {}
-                },
-                tree:{
-                    assetType:[]
-                }
-            }
-        },
-        computed:{
-            hasChecked:function () {
-                return this.tableSelectData.length !== 0;
-            },
-            hasOneChecked:function () {
-                return this.tableSelectData.length === 1;
-            },
-            fromModal:function () {
-                return new ModalBuilder("#form-modal");
-            }
-        },
-        created:function () {
-            let self = this;
-            this.getTableList();
-        },
-        beforeMount:function () {
-        },
-        mounted:function () {
-           
-        },
-        methods: {
-            getTablePaginationList:function (index,size) {
-                let self = this;
-                self.conditions.begin = (index - 1) * size;
-                self.conditions.offset = size;
-                self.getTableList();
-            },
-            getTableList:function () {
-                let self = this;
-                Server.assetType.list.param(self.conditions).execute(data => {
-                    self.tableData.data = data.object.list;
-                    self.pagination.count = data.object.count;
-                    self.initFromEmpty();
-                });
-            },
-            initFromEmpty:function () {
-                let self = this;
-                if (!self.fromModalData.empty){
-                    let empty = self.tableData.data.length === 0?null:self.tableData.data[0];
-                    self.fromModalData.empty = JsonUtils.setNull(empty);
-                }
-            },
-            getSubmitFunc:function (func) {
-                let self = this;
-                return function () {
-                    if (ValidationUtils.check(".validation")){
-                        func.body(self.fromModalData.data).execute(() => {
-                            self.fromModal.hide();
-                            self.getTableList();
-                            
-                           
-                        })
-                    }
-                };
-            },
-            deleteOne:function () {
-                let self = this;
-                SweetAlertUtils.show().sure(function () {
-                    Server.assetType.deleteById.path("id",self.tableSelectData[0].id).execute(() =>{
-                        self.getTableList();
-                       
-                    });
-                });
-            },
-            showAddModal:function () {
-                this.fromModalData.title = "添加";
-                this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
-                this.fromModalData.data.pid = this.conditions.pid;
-                this.fromModalData.submit = this.getSubmitFunc(Server.assetType.add);
-                this.fromModal.show();
-            },
-            showUpdateModal:function (obj) {
-                this.fromModalData.title = "修改";
-                this.fromModalData.data = JsonUtils.copy(obj);
-                this.fromModalData.submit = this.getSubmitFunc(Server.assetType.update);
-                this.fromModal.show();
-            }
+//路由配置
+RouteConfig.deploy({
+  data: function() {
+    return {
+      headerLabel: {
+        name: "资产类型管理",
+        path: {
+          parent: [{ url: "/", name: "Home" }, { name: "System" }],
+          active: "AssetType"
         }
-    });
-
+      },
+      conditions: {
+        begin: 0,
+        offset: 10
+      },
+      tableData: {
+        title: {
+          //  id:"类型id",
+          name: "名称",
+          order: "排序",
+          operation: { name: "操作", width: "60px" }
+        },
+        data: []
+      },
+      tableSelectData: [],
+      pagination: {},
+      fromModalData: {
+        title: "",
+        data: {},
+        empty: null,
+        submit: function() {}
+      },
+      tree: {
+        assetType: []
+      }
+    };
+  },
+  computed: {
+    hasChecked: function() {
+      return this.tableSelectData.length !== 0;
+    },
+    hasOneChecked: function() {
+      return this.tableSelectData.length === 1;
+    },
+    fromModal: function() {
+      return new ModalBuilder("#form-modal");
+    }
+  },
+  created: function() {
+    let self = this;
+    this.getTableList();
+  },
+  beforeMount: function() {},
+  mounted: function() {},
+  methods: {
+    getTablePaginationList: function(index, size) {
+      let self = this;
+      self.conditions.begin = (index - 1) * size;
+      self.conditions.offset = size;
+      self.getTableList();
+    },
+    getTableList: function() {
+      let self = this;
+      Server.assetType.list.param(self.conditions).execute(data => {
+        self.tableData.data = data.object.list;
+        self.pagination.count = data.object.count;
+        self.initFromEmpty();
+      });
+    },
+    initFromEmpty: function() {
+      let self = this;
+      if (!self.fromModalData.empty) {
+        let empty =
+          self.tableData.data.length === 0 ? null : self.tableData.data[0];
+        self.fromModalData.empty = JsonUtils.setNull(empty);
+      }
+    },
+    getSubmitFunc: function(func) {
+      let self = this;
+      return function() {
+        if (ValidationUtils.check(".validation")) {
+          func.body(self.fromModalData.data).execute(() => {
+            self.fromModal.hide();
+            self.getTableList();
+          });
+        }
+      };
+    },
+    deleteOne: function() {
+      let self = this;
+      SweetAlertUtils.show().sure(function() {
+        Server.assetType.deleteById
+          .path("id", self.tableSelectData[0].id)
+          .execute(() => {
+            self.getTableList();
+          });
+      });
+    },
+    showAddModal: function() {
+      this.fromModalData.title = "添加";
+      this.fromModalData.data = JsonUtils.copy(this.fromModalData.empty);
+      this.fromModalData.data.pid = this.conditions.pid;
+      this.fromModalData.submit = this.getSubmitFunc(Server.assetType.add);
+      this.fromModal.show();
+    },
+    showUpdateModal: function(obj) {
+      this.fromModalData.title = "修改";
+      this.fromModalData.data = JsonUtils.copy(obj);
+      this.fromModalData.submit = this.getSubmitFunc(Server.assetType.update);
+      this.fromModal.show();
+    }
+  }
+});
 </script>

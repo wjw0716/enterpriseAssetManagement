@@ -9,7 +9,7 @@
 - 数据库：mysql 5.7.14
 - 服务器：tomcat
 - 系统：window/linux
-- 运行环境：支持chrome、edge、foxfire、safari最新版,**不支持ie**
+- 运行环境：支持chrome、edge、foxfire、safari最新版,**不支持ie**,Edge修改存在问题
 
 ### 框架  
 
@@ -21,7 +21,7 @@
 #### 前端：
 - spring thymeleaf
 - vue.js(version 2.0)
-- jQuery(version 1.12)
+- jQuery(version 1.12,webjars方式引入)
 
 #### 其他：
 - swagger2  
